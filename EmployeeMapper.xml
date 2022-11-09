@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD ConfigurationModels.Mapper 3.0//EN'
+		'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='Homework.MyRosko.EmployeeMapper'>
+
+	<select id='getEmployeeById' parameterType='int' resultType='Homework.MyRosko.Employee'>
+		SELECT
+			employee_id as id,
+			email,
+			first_name as firstName,
+			last_name as lastName,
+			phone_number as phoneNumber,
+			salary,
+			hire_date as hireDate,
+			job_id as jobId,
+			manager_id as managerId,
+			department_id as departmentId
+		FROM employees
+		WHERE employee_id = #{id}
+	</select>
+
+	<resultMap type='Employee' id='EmployeeResult'>
+		<id property='id' column='employee_id'/>
+		<result property='email' column='email'/>
+		<result property='firstName' column='first_name'/>
+		<result property='lastName' column='last_name'/>
+		<result property='salary' column='salary'/>
+		<result property='hireDate' column='hire_date'/>
+		<result property='jobId' column='job_id'/>
+		<result property='managerId' column='manager_id'/>
+		<result property='departmentId' column='department_id'/>
+	</resultMap>
+
+	<select id='getAllEmployees' resultMap='EmployeeResult'>
+		SELECT * FROM employees
+	</select>
+
+	<insert id='insertEmployee' parameterType='Employee' useGeneratedKeys='true' keyProperty='id'>
+		INSERT INTO employees(first_name, last_name, email, salary, hire_date, job_id, manager_id, department_id)
+		VALUES(#{firstName}, #{lastName}, #{email}, #{salary}, #{hireDate}, #{jobId}, #{managerId}, #{departmentId})
+	</insert>
+
+	<update id='updateEmployee' parameterType='Employee'>
+		UPDATE employees
+		SET
+			first_name = #{firstName},
+			last_name = #{lastName},
+			email = #{email},
+			salary = #{salary},
+			hire_date = #{hireDate},
+			job_id = #{jobId},
+			manager_id = #{managerId},
+			department_id = #{departmentId}
+		WHERE employee_id = #{id}
+	</update>
+
+	<delete id='deleteEmployee' parameterType='int'>
+		DELETE FROM employees WHERE employee_id = #{id}
+	</delete>
+
+</mapper>
