@@ -41,18 +41,19 @@ class DatabaseConnectionPool {
         }
     }
 
-    private static final int CONNECTIONS_COUNT = 10;
+    private static final int MAX_CONNECTIONS = 10;
     private static final int MIN_CONNECTIONS = 3;
     private static final int TEN_MINUTES_IN_MILLIS = 600000;
     private static final Timer activityTimer = new Timer();
-    private static final ConnectionWrapper[] connections = new ConnectionWrapper[CONNECTIONS_COUNT];
+    private static final ConnectionWrapper[] connections = new ConnectionWrapper[MAX_CONNECTIONS];
+    private static int connectionsCount = 0;
     private static DatabaseConnectionPool pool;
     private static String URL;
     private static String USERNAME;
     private static String PASSWORD;
     private static Configuration config;
 
-    private void initialize() {
+    private static void initialize() {
         System.setProperty("jdbc.DRIVER", config.properties.getProperty("db_driver"));
         setActivityTimer();
         URL = config.properties.getProperty("db_url");
@@ -61,13 +62,14 @@ class DatabaseConnectionPool {
         for (int i = 0; i < MIN_CONNECTIONS; i++) {
             try {
                 connections[i] = new ConnectionWrapper(URL, USERNAME, PASSWORD);
+                connectionsCount++;
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    protected DatabaseConnectionPool(Configuration config) {
+    private DatabaseConnectionPool(Configuration config) {
         pool = new DatabaseConnectionPool();
         DatabaseConnectionPool.config = config;
         initialize();
@@ -77,7 +79,13 @@ class DatabaseConnectionPool {
     }
 
     public static DatabaseConnectionPool getConnectionPool() {
+        if (pool == null || config == null)
+            throw new IllegalStateException("The pool was not configured");
         return pool;
+    }
+
+    public static void setConfig(Configuration config) {
+        pool = new DatabaseConnectionPool(config);
     }
 
     public Connection getConnection() throws SQLException {
@@ -124,7 +132,7 @@ class DatabaseConnectionPool {
             @Override
             public void run() {
                 int activeCons = 0;
-                for (int i = 0; i < connections.length; i++) {
+                for (int i = 0; i < connectionsCount; i++) {
                     if (activeCons < MIN_CONNECTIONS) {
                         activeCons++;
                         continue;
@@ -133,6 +141,7 @@ class DatabaseConnectionPool {
                         try {
                             connections[i].connection.close();
                             connections[i] = null;
+                            connectionsCount--;
                         } catch (SQLException e) {
                             System.out.println("Could not close connection");
                         }

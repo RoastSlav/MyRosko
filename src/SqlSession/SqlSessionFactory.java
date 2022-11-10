@@ -10,7 +10,7 @@ public class SqlSessionFactory {
     private final Configuration config;
 
     protected SqlSessionFactory(Configuration configuration) {
-        pool = new DatabaseConnectionPool(configuration);
+        pool = DatabaseConnectionPool.getConnectionPool();
         config = configuration;
     }
 
@@ -26,6 +26,10 @@ public class SqlSessionFactory {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public SqlSession openSession(Connection conn) {
+        return new SqlSession(conn);
     }
 
     Configuration getConfiguration() {
