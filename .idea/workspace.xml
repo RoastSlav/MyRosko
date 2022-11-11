@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Added the DatabaseConnectionPool and created the SqlSessionFactoryBuilder, SqlSessionFactory files">
+    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="ConfigurationParser refactoring and some minor changes&#10;&#10;Cleaned up the ConfigurationParser and set up proper exception generation.&#10;Also optimized it to search only the current node when parsing and not the whole document.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlSession/DatabaseConnectionPool.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/DatabaseConnectionPool.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactoryBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactoryBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyRosko.iml" beforeDir="false" afterPath="$PROJECT_DIR$/MyRosko.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,19 +30,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/Programming Projects/Utility/MySQL JDBC connector/mysql-connector-j-8.0.31.jar",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
-}</component>
+}]]></component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="config.properties.getProperty(&quot;db_driver&quot;)" />
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="MyRosko" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="MyRosko" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -54,7 +73,8 @@
       <option name="presentableId" value="Default" />
       <updated>1667992083071</updated>
       <workItem from="1667992084389" duration="2246000" />
-      <workItem from="1668065511662" duration="846000" />
+      <workItem from="1668065511662" duration="7452000" />
+      <workItem from="1668114640792" duration="6617000" />
     </task>
     <task id="LOCAL-00001" summary="Created models and parsers for the configuration file and mapper files.">
       <created>1667993790220</created>
@@ -70,7 +90,21 @@
       <option name="project" value="LOCAL" />
       <updated>1667993843250</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Separated the initialization of the connection pool from getting the pool">
+      <created>1668066531997</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1668066531997</updated>
+    </task>
+    <task id="LOCAL-00004" summary="ConfigurationParser refactoring and some minor changes&#10;&#10;Cleaned up the ConfigurationParser and set up proper exception generation.&#10;Also optimized it to search only the current node when parsing and not the whole document.">
+      <created>1668154123088</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1668154123088</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -91,6 +125,22 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Created models and parsers for the configuration file and mapper files." />
     <MESSAGE value="Added the DatabaseConnectionPool and created the SqlSessionFactoryBuilder, SqlSessionFactory files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the DatabaseConnectionPool and created the SqlSessionFactoryBuilder, SqlSessionFactory files" />
+    <MESSAGE value="Separated the initialization of the connection pool from getting the pool" />
+    <MESSAGE value="ConfigurationParser refactoring and some minor changes&#10;&#10;Cleaned up the ConfigurationParser and set up proper exception generation.&#10;Also optimized it to search only the current node when parsing and not the whole document." />
+    <option name="LAST_COMMIT_MESSAGE" value="ConfigurationParser refactoring and some minor changes&#10;&#10;Cleaned up the ConfigurationParser and set up proper exception generation.&#10;Also optimized it to search only the current node when parsing and not the whole document." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/SqlSession/DatabaseConnectionPool.java</url>
+          <line>21</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/MyRosko$MyRosko.ic" NAME="MyRosko Coverage Results" MODIFIED="1668150292173" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

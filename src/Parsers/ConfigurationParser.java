@@ -118,10 +118,15 @@ public class ConfigurationParser {
         if (environmentsElement == null)
             throw new ParserConfigurationException("The environments element is missing from the configuration file");
 
+        String defaultEnvId = environmentsElement.getAttribute("default");
+        Environment defaultEnv = null;
+
         List<Element> environmentElements = getChildrenByTagName(environmentsElement, "environment");
         for (Element environmentElement : environmentElements) {
             Environment env = new Environment();
             env.id = environmentElement.getAttribute("id");
+            if (env.id.equals(defaultEnvId))
+                defaultEnv = env;
 
             List<Element> transManElements = getChildrenByTagName(environmentsElement, "transactionManager");
             env.transactionManager = transManElements.get(0).getAttribute("type");
@@ -130,7 +135,6 @@ public class ConfigurationParser {
         }
 
         Environment[] environmentsArray = environments.toArray(Environment[]::new);
-        String defaultEnv = environmentsElement.getAttribute("default");
         return new Environments(environmentsArray, defaultEnv);
     }
 
