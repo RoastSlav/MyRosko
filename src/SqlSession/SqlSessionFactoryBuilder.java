@@ -7,11 +7,11 @@ import java.io.Reader;
 import java.util.Properties;
 
 public class SqlSessionFactoryBuilder {
-    public SqlSessionFactory build(Reader reader) {
+    public ISqlSessionFactory build(Reader reader) {
         return this.build(reader, null);
     }
 
-    public SqlSessionFactory build(Reader reader, Properties props) {
+    public ISqlSessionFactory build(Reader reader, Properties props) {
         Configuration configuration;
         try {
             ConfigurationParser configurationParser = new ConfigurationParser(reader, props);
@@ -20,6 +20,9 @@ public class SqlSessionFactoryBuilder {
             throw new RuntimeException(e);
         }
 
-        return new SqlSessionFactory(configuration);
+        if (configuration.environments.defaultEnv.dataSource.type.equals("POOLED"))
+            return new SqlSessionFactoryPooled(configuration);
+        else
+            return new SqlSessionFactoryUnpooled(configuration);
     }
 }

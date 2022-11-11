@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class SqlSessionFactory {
+public class SqlSessionFactoryPooled implements ISqlSessionFactory {
     static class ConnectionWrapper {
         Connection connection;
         boolean available;
@@ -40,28 +40,25 @@ public class SqlSessionFactory {
             return m.invoke(con, args);
         }
     }
-    private final Configuration config;
-    private final boolean POOLED;
-    private static String URL;
-    private static String USERNAME;
-    private static String PASSWORD;
+
     private static final int MAX_CONNECTIONS = 10;
     private static final int MIN_CONNECTIONS = 3;
     private static final int TEN_MINUTES_IN_MILLIS = 600000;
+    private final Configuration config;
+    private static String URL;
+    private static String USERNAME;
+    private static String PASSWORD;
     private static Timer activityTimer;
     private static ConnectionWrapper[] connections;
     private static int connectionsCount;
 
-    protected SqlSessionFactory(Configuration configuration) {
+    protected SqlSessionFactoryPooled(Configuration configuration) {
         config = configuration;
-        POOLED = config.environments.defaultEnv.dataSource.type.equals("POOLED");
         String driver = config.environments.defaultEnv.dataSource.properties.getProperty("db_driver");
         URL = config.environments.defaultEnv.dataSource.properties.getProperty("db_url");
         USERNAME = config.environments.defaultEnv.dataSource.properties.getProperty("db_user");
         PASSWORD = config.environments.defaultEnv.dataSource.properties.getProperty("db_password");
         System.setProperty("jdbc.DRIVER", driver);
-        if (POOLED)
-            intializePool();
     }
 
     private void intializePool() {
@@ -148,13 +145,9 @@ public class SqlSessionFactory {
         }
     }
 
-    private static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USERNAME, PASSWORD);
-    }
-    
     private SqlSession createSession() throws SQLException {
-        Connection connection = POOLED ? getPooledConnection() : getConnection();
-        return new SqlSession(connection);
+       Connection conn = getPooledConnection();
+        return new SqlSession(conn);
     }
 
     public SqlSession openSession() {
@@ -169,7 +162,7 @@ public class SqlSessionFactory {
         return new SqlSession(conn);
     }
 
-    Configuration getConfiguration() {
+    public Configuration getConfiguration() {
         return config;
     }
 }
