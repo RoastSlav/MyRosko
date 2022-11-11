@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class SqlSessionFactoryUnpooled implements ISqlSessionFactory {
+public class SqlSessionFactoryUnpooled extends SqlSessionFactory {
     private final Configuration config;
     private static String URL;
     private static String USERNAME;

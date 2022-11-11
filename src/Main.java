@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) throws Exception {
         String resource = "mybatis-config.xml";
-        ISqlSessionFactory sessionFactory = getSessionFactory(resource);
+        SqlSessionFactory sessionFactory = getSessionFactory(resource);
         try (SqlSession sqlSession = sessionFactory.openSession()) {
 
         } catch (Exception e) {
@@ -16,7 +16,7 @@ public class Main {
         }
     }
 
-    public static ISqlSessionFactory getSessionFactory(String resource) throws IOException {
+    public static SqlSessionFactory getSessionFactory(String resource) throws IOException {
         try (Reader reader = Resources.getResourceAsReader(resource)) {
             return new SqlSessionFactoryBuilder().build(reader);
         }

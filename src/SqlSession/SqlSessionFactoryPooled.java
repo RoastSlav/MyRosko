@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class SqlSessionFactoryPooled implements ISqlSessionFactory {
+public class SqlSessionFactoryPooled extends SqlSessionFactory {
     static class ConnectionWrapper {
         Connection connection;
         boolean available;
