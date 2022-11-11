@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="ConfigurationParser refactoring and some minor changes&#10;&#10;Cleaned up the ConfigurationParser and set up proper exception generation.&#10;Also optimized it to search only the current node when parsing and not the whole document.">
+    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Changed the defaultEnv String to hold the object itself&#10;&#10;Changed the defaultEnv in Environments to hold the object itself and mode the parser find it while it parses the configuration.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyRosko.iml" beforeDir="false" afterPath="$PROJECT_DIR$/MyRosko.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SqlSession/DatabaseConnectionPool.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/DatabaseConnectionPool.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +75,7 @@
       <updated>1667992083071</updated>
       <workItem from="1667992084389" duration="2246000" />
       <workItem from="1668065511662" duration="7452000" />
-      <workItem from="1668114640792" duration="6617000" />
+      <workItem from="1668114640792" duration="8100000" />
     </task>
     <task id="LOCAL-00001" summary="Created models and parsers for the configuration file and mapper files.">
       <created>1667993790220</created>
@@ -104,7 +105,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668154123088</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Changed the defaultEnv String to hold the object itself&#10;&#10;Changed the defaultEnv in Environments to hold the object itself and mode the parser find it while it parses the configuration.">
+      <created>1668154483081</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1668154483081</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -127,7 +135,8 @@
     <MESSAGE value="Added the DatabaseConnectionPool and created the SqlSessionFactoryBuilder, SqlSessionFactory files" />
     <MESSAGE value="Separated the initialization of the connection pool from getting the pool" />
     <MESSAGE value="ConfigurationParser refactoring and some minor changes&#10;&#10;Cleaned up the ConfigurationParser and set up proper exception generation.&#10;Also optimized it to search only the current node when parsing and not the whole document." />
-    <option name="LAST_COMMIT_MESSAGE" value="ConfigurationParser refactoring and some minor changes&#10;&#10;Cleaned up the ConfigurationParser and set up proper exception generation.&#10;Also optimized it to search only the current node when parsing and not the whole document." />
+    <MESSAGE value="Changed the defaultEnv String to hold the object itself&#10;&#10;Changed the defaultEnv in Environments to hold the object itself and mode the parser find it while it parses the configuration." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed the defaultEnv String to hold the object itself&#10;&#10;Changed the defaultEnv in Environments to hold the object itself and mode the parser find it while it parses the configuration." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

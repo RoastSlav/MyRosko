@@ -19,7 +19,6 @@ public class SqlSessionFactoryBuilder {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        DatabaseConnectionPool.setConfig(configuration);
 
         return new SqlSessionFactory(configuration);
     }
