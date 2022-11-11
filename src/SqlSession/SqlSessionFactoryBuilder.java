@@ -17,7 +17,7 @@ public class SqlSessionFactoryBuilder {
             ConfigurationParser configurationParser = new ConfigurationParser(reader, props);
             configuration = configurationParser.parse();
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         DatabaseConnectionPool.setConfig(configuration);
 

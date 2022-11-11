@@ -3,6 +3,7 @@ package Parsers;
 import ConfigurationModels.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -16,6 +17,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class ConfigurationParser {
@@ -30,48 +32,42 @@ public class ConfigurationParser {
         this.properties = properties;
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        try(reader) {
+        try (reader) {
             doc = dBuilder.parse(new InputSource(reader));
         }
         doc.getDocumentElement().normalize();
     }
 
-    public Configuration parse() throws IOException {
+    public Configuration parse() throws Exception {
         Configuration configuration = new Configuration();
         if (!doc.getDocumentElement().getNodeName().equals("configuration"))
-            return null;
+            throw new ParserConfigurationException("The file is not a configuration file");
 
-        Properties parsedProps = parseProperties();
-        if (parsedProps != null && this.properties != null)
+        Properties parsedProps = parseProperties(doc.getDocumentElement());
+        if (this.properties != null)
             parsedProps.putAll(this.properties);
-        else if (parsedProps == null && this.properties != null)
-            parsedProps = this.properties;
         configuration.properties = parsedProps;
-
-        configuration.typeAliases = parseTypeAliases();
-        Environment[] environments = parseEnvironments(configuration.properties);
-        configuration.environments = new Environments(environments);
-        configuration.mappers = parseMappers();
+        configuration.typeAliases = parseTypeAliases(doc.getDocumentElement());
+        configuration.environments = parseEnvironments(doc.getDocumentElement(), configuration.properties);
+        configuration.mappers = parseMappers(doc.getDocumentElement());
         return configuration;
     }
 
-    private Mapper[] parseMappers() {
+    private Mapper[] parseMappers(Element conf) throws ParserConfigurationException {
         ArrayList<Mapper> mappers = new ArrayList<>();
-        NodeList mappersNode = doc.getElementsByTagName("mappers");
-        Element mappersElement = (Element) mappersNode.item(0);
+        Element mappersElement = getChildByTagName(conf, "mappers");
         if (mappersElement == null)
-            return new Mapper[0];
+            throw new ParserConfigurationException("The mappers element is missing from the configuration file");
 
-        NodeList mappersNodeList = mappersElement.getElementsByTagName("mapper");
+        List<Element> mapperElements = getChildrenByTagName(mappersElement, "mapper");
         MapperParser parser = new MapperParser();
-        for (int i = 0; i < mappersNodeList.getLength(); i++) {
-            Element mapperElement = (Element) mappersNodeList.item(i);
-            String resource = mapperElement.getAttribute("resource");
+        for (Element element : mapperElements) {
+            String resource = element.getAttribute("resource");
             Mapper mapper;
             try {
                 mapper = parser.parse(resource);
             } catch (Exception e) {
-                throw new RuntimeException("Could not parse mapper");
+                throw new ParserConfigurationException("There was an error parsing a mapper: " + resource);
             }
             mappers.add(mapper);
         }
@@ -79,84 +75,102 @@ public class ConfigurationParser {
         return mappers.toArray(Mapper[]::new);
     }
 
-    private Properties parseProperties() throws IOException {
+    private Properties parseProperties(Element conf) throws IOException, ParserConfigurationException {
         Properties properties = new Properties();
-        NodeList nodeList = doc.getElementsByTagName("properties");
-        Element propsElement = (Element) nodeList.item(0);
-        if (propsElement == null)
-            return null;
+        Element propertiesElement = getChildByTagName(conf, "properties");
+        if (propertiesElement == null)
+            throw new ParserConfigurationException("The properties element is missing from the configuration file");
 
-        NodeList childNodes = propsElement.getElementsByTagName("property");
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Element propElement = (Element) childNodes.item(i);
-            String name = propElement.getAttribute("name");
-            String value = propElement.getAttribute("value");
-            properties.setProperty(name, value);
+        List<Element> propertyElements = getChildrenByTagName(propertiesElement, "property");
+        for (Element propertyElement : propertyElements) {
+            String name = propertyElement.getAttribute("name");
+            String value = propertyElement.getAttribute("value");
+            if (name.isEmpty() || value.isEmpty()) {
+                String resource = propertyElement.getAttribute("resource");
+                if (!resource.isEmpty() && Files.exists(Path.of(resource)))
+                    properties.load(new FileInputStream(resource));
+            } else
+                properties.setProperty(name, value);
         }
-
-        String resource = propsElement.getAttribute("resource");
-        if (!resource.isEmpty() && Files.exists(Path.of(resource)))
-            properties.load(new FileInputStream(resource));
 
         return properties;
     }
 
-    private TypeAlias[] parseTypeAliases() {
+    private TypeAlias[] parseTypeAliases(Element conf) throws ParserConfigurationException {
         ArrayList<TypeAlias> aliases = new ArrayList<>();
-        NodeList nodeList = doc.getElementsByTagName("typeAliases");
-        Element typeAliasesElement = (Element) nodeList.item(0);
+        Element typeAliasesElement = getChildByTagName(conf, "typeAliases");
         if (typeAliasesElement == null)
-            return null;
+            throw new ParserConfigurationException("The typeAliases element is missing from the configuration file");;
 
-        NodeList typeAliases = typeAliasesElement.getElementsByTagName("typeAlias");
-        for (int i = 0; i < typeAliases.getLength(); i++) {
-            Element aliasElement = (Element) typeAliases.item(i);
-            String type = aliasElement.getAttribute("type");
-            String alias = aliasElement.getAttribute("alias");
+        List<Element> typeAliasElements = getChildrenByTagName(typeAliasesElement, "typeAlias");
+        for (Element typeAliasElement : typeAliasElements) {
+            String type = typeAliasElement.getAttribute("type");
+            String alias = typeAliasElement.getAttribute("alias");
             TypeAlias typeAlias = new TypeAlias(type, alias);
             aliases.add(typeAlias);
         }
         return aliases.toArray(TypeAlias[]::new);
     }
 
-    private Environment[] parseEnvironments(Properties props) {
+    private Environments parseEnvironments(Element conf, Properties props) throws ParserConfigurationException {
         ArrayList<Environment> environments = new ArrayList<>();
-        NodeList nodeList = doc.getElementsByTagName("environments");
-        Element environmentsElement = (Element) nodeList.item(0);
+        Element environmentsElement = getChildByTagName(conf, "environments");
         if (environmentsElement == null)
-            return null;
+            throw new ParserConfigurationException("The environments element is missing from the configuration file");
 
-        NodeList environmentNodes = environmentsElement.getElementsByTagName("environment");
-        for (int i = 0; i < environmentNodes.getLength(); i++) {
+        List<Element> environmentElements = getChildrenByTagName(environmentsElement, "environment");
+        for (Element environmentElement : environmentElements) {
             Environment env = new Environment();
-            Element environment = (Element) environmentNodes.item(i);
-            env.id = environment.getAttribute("id");
+            env.id = environmentElement.getAttribute("id");
 
-            NodeList transManNode = environment.getElementsByTagName("transactionManager");
-            Element transMan = (Element) transManNode.item(0);
-            env.transactionManager = transMan.getAttribute("type");
-            env.dataSource = parseDataSource(environment, props);
+            List<Element> transManElements = getChildrenByTagName(environmentsElement, "transactionManager");
+            env.transactionManager = transManElements.get(0).getAttribute("type");
+            env.dataSource = parseDataSource(environmentElement, props);
             environments.add(env);
         }
-        return environments.toArray(Environment[]::new);
+
+        Environment[] environmentsArray = environments.toArray(Environment[]::new);
+        String defaultEnv = environmentsElement.getAttribute("default");
+        return new Environments(environmentsArray, defaultEnv);
     }
 
-    private DataSource parseDataSource(Element environment, Properties props) {
+    private DataSource parseDataSource(Element environment, Properties props) throws ParserConfigurationException {
         DataSource dataSource = new DataSource();
-        NodeList dataSourceNode = environment.getElementsByTagName("dataSource");
-        Element dataSourceElement = (Element) dataSourceNode.item(0);
+        Element dataSourceElement = getChildByTagName(environment, "dataSource");
+        if (dataSourceElement == null)
+            throw new ParserConfigurationException("The dataSource element is missing from the configuration file");
         dataSource.type = dataSourceElement.getAttribute("type");
 
-        NodeList properties = dataSourceElement.getElementsByTagName("property");
-        for (int j = 0; j < properties.getLength(); j++) {
-            Element prop = (Element) properties.item(j);
-            String name = prop.getAttribute("name");
-            String value = prop.getAttribute("value");
+        List<Element> propertyElements = getChildrenByTagName(dataSourceElement, "property");
+        for (Element propertyElement : propertyElements) {
+            String name = propertyElement.getAttribute("name");
+            String value = propertyElement.getAttribute("value");
             if (value.startsWith("#{") && value.endsWith("}"))
                 value = props.getProperty(value.substring(2, value.length() - 1));
 
             dataSource.properties.setProperty(name, value);
         }
         return dataSource;
+    }
+
+    private static List<Element> getChildrenByTagName(Element parent, String name) {
+        List<Element> nodeList = new ArrayList<>();
+        for (Node child = parent.getFirstChild(); child != null; child = child.getNextSibling()) {
+            if (child.getNodeType() == Node.ELEMENT_NODE && name.equals(child.getNodeName()))
+                nodeList.add((Element) child);
+        }
+
+        return nodeList;
+    }
+
+    private static Element getChildByTagName(Element parent, String name) throws ParserConfigurationException {
+        List<Element> childrenByTagName = getChildrenByTagName(parent, name);
+        if (childrenByTagName.size() > 1)
+            throw new ParserConfigurationException("There is more than one: " + name);
+
+        if (childrenByTagName.size() < 1)
+            return null;
+
+        return childrenByTagName.get(0);
     }
 }

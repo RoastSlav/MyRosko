@@ -18,7 +18,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 
 class MapperParser {
-    Mapper parse(String resource) throws IOException, SAXException, ParserConfigurationException {
+    Mapper parse(String resource) throws Exception {
         Document doc = createDoc(resource);
         if (doc.getNodeName().equals("mapper"))
             return null;
@@ -31,7 +31,7 @@ class MapperParser {
         return mapper;
     }
 
-    private Document createDoc(String resource) throws ParserConfigurationException, IOException, SAXException {
+    private Document createDoc(String resource) throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
@@ -122,8 +122,8 @@ class MapperParser {
             NodeList childNodes = resultMapElement.getChildNodes();
             for (int j = 0; j < childNodes.getLength(); j++) {
                 Node node = childNodes.item(j);
-                if (node.getNodeName().equals("id") ||
-                        node.getNodeName().equals("result")) {
+                String nodeName = node.getNodeName();
+                if (nodeName.equals("id") || nodeName.equals("result")) {
                     Element element = (Element) node;
                     String property = element.getAttribute("property");
                     String column = element.getAttribute("column");
