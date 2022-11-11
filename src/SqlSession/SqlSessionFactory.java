@@ -48,9 +48,9 @@ public class SqlSessionFactory {
     private static final int MAX_CONNECTIONS = 10;
     private static final int MIN_CONNECTIONS = 3;
     private static final int TEN_MINUTES_IN_MILLIS = 600000;
-    private static final Timer activityTimer = new Timer();
-    private static final ConnectionWrapper[] connections = new ConnectionWrapper[MAX_CONNECTIONS];
-    private static int connectionsCount = 0;
+    private static Timer activityTimer;
+    private static ConnectionWrapper[] connections;
+    private static int connectionsCount;
 
     protected SqlSessionFactory(Configuration configuration) {
         config = configuration;
@@ -65,6 +65,9 @@ public class SqlSessionFactory {
     }
 
     private void intializePool() {
+        connections = new ConnectionWrapper[MAX_CONNECTIONS];
+        activityTimer = new Timer();
+        connectionsCount = 0;
         setActivityTimer();
         for (int i = 0; i < MIN_CONNECTIONS; i++) {
             try {
