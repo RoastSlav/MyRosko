@@ -27,7 +27,7 @@ public class SqlSessionFactoryUnpooled extends SqlSessionFactory {
 
     private SqlSession createSession() throws SQLException {
         Connection connection = getConnection();
-        return new SqlSession(connection);
+        return new SqlSession(connection, config);
     }
 
     public SqlSession openSession() {
@@ -39,7 +39,7 @@ public class SqlSessionFactoryUnpooled extends SqlSessionFactory {
     }
 
     public SqlSession openSession(Connection conn) {
-        return new SqlSession(conn);
+        return new SqlSession(conn, config);
     }
 
     public Configuration getConfiguration() {

@@ -4,7 +4,7 @@
 
 <mapper namespace='Homework.MyRosko.EmployeeMapper'>
 
-	<select id='getEmployeeById' parameterType='int' resultType='Homework.MyRosko.Employee'>
+	<select id='getEmployeeById' parameterType='int' resultType='Employee'>
 		SELECT
 			employee_id as id,
 			email,
@@ -17,7 +17,7 @@
 			manager_id as managerId,
 			department_id as departmentId
 		FROM employees
-		WHERE employee_id = #{id}
+		WHERE employee_id = #{value}
 	</select>
 
 	<resultMap type='Employee' id='EmployeeResult'>
@@ -56,7 +56,7 @@
 	</update>
 
 	<delete id='deleteEmployee' parameterType='int'>
-		DELETE FROM employees WHERE employee_id = #{id}
+		DELETE FROM employees WHERE employee_id = #{value}
 	</delete>
 
 </mapper>

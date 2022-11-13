@@ -10,9 +10,8 @@ public class Main {
         String resource = "mybatis-config.xml";
         SqlSessionFactory sessionFactory = getSessionFactory(resource);
         try (SqlSession sqlSession = sessionFactory.openSession()) {
-
-        } catch (Exception e) {
-            throw new SQLException("The session did not close successfully");
+            Employee emp = sqlSession.selectOne("getEmployeeById", 122);
+            System.out.println(emp.firstName);
         }
     }
 

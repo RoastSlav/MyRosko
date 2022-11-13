@@ -1,5 +1,9 @@
 package Parsers;
 
+import Anotations.Delete;
+import Anotations.Insert;
+import Anotations.Select;
+import Anotations.Update;
 import ConfigurationModels.Mapper;
 import SqlMappingModels.*;
 import Utility.Resources;
@@ -8,14 +12,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.io.Reader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+
+import static Parsers.SqlParser.prepareSql;
+import static SqlMappingModels.MappingTypeEnum.*;
 
 class MapperParser {
     Mapper parse(String resource) throws Exception {
@@ -28,6 +36,35 @@ class MapperParser {
         mapper.mappings = parseMappings(doc);
         mapper.resultMaps = parseResultMaps(doc);
 
+        return mapper;
+    }
+
+    Mapper parseClassMapper(Class<?> type) throws ParserConfigurationException {
+        Method[] declaredMethods = type.getDeclaredMethods();
+        Mapper mapper = new Mapper();
+        mapper.namespace = type.getName();
+        for (Method method : declaredMethods) {
+            SqlMapping mapping = new SqlMapping();
+            mapping.id = method.getName();
+            Parameter parameter = method.getParameters()[0];
+            mapping.parameterType = parameter.getType().getName();
+            mapping.paramNames.add(parameter.getName());
+            Annotation[] annotations = method.getDeclaredAnnotations();
+            if (annotations[0] instanceof Select) {
+                mapping.mappingType = SELECT;
+                mapping.sql = ((Select) annotations[0]).value();
+            } else if (annotations[0] instanceof Update) {
+                mapping.mappingType = UPDATE;
+                mapping.sql = ((Update) annotations[0]).value();
+            } else if (annotations[0] instanceof Delete) {
+                mapping.mappingType = DELETE;
+                mapping.sql = ((Delete) annotations[0]).value();
+            } else if (annotations[0] instanceof Insert) {
+                mapping.mappingType = INSERT;
+                mapping.sql = ((Insert) annotations[0]).value();
+            } else
+                throw new ParserConfigurationException(type.getSimpleName() + " isn't a valid mapper");
+        }
         return mapper;
     }
 
@@ -102,10 +139,11 @@ class MapperParser {
     }
 
     private void getBasicInfo(Element e, SqlMapping mapping) {
-        mapping.mappingType = MappingTypeEnum.valueOf(e.getNodeName().toUpperCase());
+        mapping.mappingType = valueOf(e.getNodeName().toUpperCase());
         mapping.id = e.getAttribute("id");
         mapping.parameterType = e.getAttribute("parameterType");
         mapping.sql = e.getTextContent();
+        prepareSql(mapping);
     }
 
     private ResultMap[] parseResultMaps(Document doc) {

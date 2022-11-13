@@ -11,5 +11,9 @@ class Employee {
     int jobId;
     int managerId;
     int departmentId;
+
+    Employee() {
+
+    }
 }
 

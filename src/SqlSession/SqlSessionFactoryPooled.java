@@ -54,11 +54,12 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
 
     protected SqlSessionFactoryPooled(Configuration configuration) {
         config = configuration;
-        String driver = config.environments.defaultEnv.dataSource.properties.getProperty("db_driver");
-        URL = config.environments.defaultEnv.dataSource.properties.getProperty("db_url");
-        USERNAME = config.environments.defaultEnv.dataSource.properties.getProperty("db_user");
-        PASSWORD = config.environments.defaultEnv.dataSource.properties.getProperty("db_password");
+        String driver = config.environments.defaultEnv.dataSource.properties.getProperty("driver");
+        URL = config.environments.defaultEnv.dataSource.properties.getProperty("url");
+        USERNAME = config.environments.defaultEnv.dataSource.properties.getProperty("username");
+        PASSWORD = config.environments.defaultEnv.dataSource.properties.getProperty("password");
         System.setProperty("jdbc.DRIVER", driver);
+        intializePool();
     }
 
     private void intializePool() {
@@ -137,6 +138,8 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
 
     private static void releaseConnection(Connection conn) {
         for (ConnectionWrapper connection : connections) {
+            if (connection == null)
+                break;
             if (connection.connection.equals(conn)) {
                 connection.available = true;
                 connection.lastUsed = System.currentTimeMillis();
@@ -147,7 +150,7 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
 
     private SqlSession createSession() throws SQLException {
        Connection conn = getPooledConnection();
-        return new SqlSession(conn);
+        return new SqlSession(conn, config);
     }
 
     public SqlSession openSession() {
@@ -159,7 +162,7 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
     }
 
     public SqlSession openSession(Connection conn) {
-        return new SqlSession(conn);
+        return new SqlSession(conn, config);
     }
 
     public Configuration getConfiguration() {

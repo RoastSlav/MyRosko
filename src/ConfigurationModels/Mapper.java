@@ -1,5 +1,6 @@
 package ConfigurationModels;
 
+import Exceptions.MyBatisException;
 import SqlMappingModels.ResultMap;
 import SqlMappingModels.SqlMapping;
 

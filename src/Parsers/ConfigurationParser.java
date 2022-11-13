@@ -4,7 +4,6 @@ import ConfigurationModels.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -53,7 +52,7 @@ public class ConfigurationParser {
         return configuration;
     }
 
-    private Mapper[] parseMappers(Element conf) throws ParserConfigurationException {
+    private Mapper[] parseMappers(Element conf) throws Exception {
         ArrayList<Mapper> mappers = new ArrayList<>();
         Element mappersElement = getChildByTagName(conf, "mappers");
         if (mappersElement == null)
@@ -63,9 +62,15 @@ public class ConfigurationParser {
         MapperParser parser = new MapperParser();
         for (Element element : mapperElements) {
             String resource = element.getAttribute("resource");
+            String classResource = element.getAttribute("class");
             Mapper mapper;
             try {
-                mapper = parser.parse(resource);
+                if (!resource.isEmpty()) {
+                    mapper = parser.parse(resource);
+                } else if (!classResource.isEmpty()) {
+                    mapper = parser.parseClassMapper(Class.forName(classResource));
+                } else
+                    throw new ParserConfigurationException("There was an error parsing a mapper");
             } catch (Exception e) {
                 throw new ParserConfigurationException("There was an error parsing a mapper: " + resource);
             }
@@ -128,7 +133,7 @@ public class ConfigurationParser {
             if (env.id.equals(defaultEnvId))
                 defaultEnv = env;
 
-            List<Element> transManElements = getChildrenByTagName(environmentsElement, "transactionManager");
+            List<Element> transManElements = getChildrenByTagName(environmentElement, "transactionManager");
             env.transactionManager = transManElements.get(0).getAttribute("type");
             env.dataSource = parseDataSource(environmentElement, props);
             environments.add(env);
