@@ -1,6 +1,5 @@
 package SqlMappingModels;
 
-import java.sql.Statement;
 import java.util.List;
 
 public class ClassMapperStatement<P, R> {

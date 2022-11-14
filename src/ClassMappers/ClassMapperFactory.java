@@ -1,6 +1,9 @@
 package ClassMappers;
 
-import Anotations.*;
+import Anotations.Delete;
+import Anotations.Insert;
+import Anotations.Select;
+import Anotations.Update;
 import SqlMappingModels.ClassMapperStatement;
 
 import java.lang.annotation.Annotation;
@@ -8,14 +11,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static Parsers.SqlParser.prepareSql;
 import static StatementUtility.ObjectBuilder.constructObject;
-import static StatementUtility.StatementBuilder.*;
+import static StatementUtility.StatementBuilder.prepareStatement;
 import static Utility.StringUtility.normalize;
 
 public class ClassMapperFactory {
@@ -32,12 +38,14 @@ public class ClassMapperFactory {
                 if (annotations[0] instanceof Select) {
                     Class<?> returnType = method.getReturnType();
                     String sql = ((Select) annotations[0]).value();
+
                     ClassMapperStatement statement = getStatement(sql, method.getName(), c);
                     return selectObject(statement.sql, statement.values, returnType, args[0]);
                 } else if (annotations[0] instanceof Insert ||
                         annotations[0] instanceof Update ||
                         annotations[0] instanceof Delete) {
                     String sql = ((Insert) annotations[0]).value();
+
                     ClassMapperStatement statement = getStatement(sql, method.getName(), c);
                     return executeUpdate(statement.sql, statement.values, args[0]);
                 }
@@ -51,11 +59,13 @@ public class ClassMapperFactory {
         PreparedStatement preparedStatement = prepareStatement(sql, params, values, conn);
         ResultSet resultSet = preparedStatement.executeQuery();
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+
         HashMap<String, Field> fieldNames = new HashMap<>();
         for (Field declaredField : c.getDeclaredFields()) {
             String normalized = normalize(declaredField.getName());
             fieldNames.put(normalized, declaredField);
         }
+
         resultSet.next();
         T object = constructObject(resultSet, resultSetMetaData, fieldNames, c);
         if (resultSet.next()) {

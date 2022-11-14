@@ -24,7 +24,7 @@ public class ConfigurationParser {
     Properties properties;
 
     public ConfigurationParser(Reader reader) throws ParserConfigurationException, IOException, SAXException {
-         this(reader, null);
+        this(reader, null);
     }
 
     public ConfigurationParser(Reader reader, Properties properties) throws ParserConfigurationException, IOException, SAXException {
@@ -35,6 +35,27 @@ public class ConfigurationParser {
             doc = dBuilder.parse(new InputSource(reader));
         }
         doc.getDocumentElement().normalize();
+    }
+
+    private static List<Element> getChildrenByTagName(Element parent, String name) {
+        List<Element> nodeList = new ArrayList<>();
+        for (Node child = parent.getFirstChild(); child != null; child = child.getNextSibling()) {
+            if (child.getNodeType() == Node.ELEMENT_NODE && name.equals(child.getNodeName()))
+                nodeList.add((Element) child);
+        }
+
+        return nodeList;
+    }
+
+    private static Element getChildByTagName(Element parent, String name) throws ParserConfigurationException {
+        List<Element> childrenByTagName = getChildrenByTagName(parent, name);
+        if (childrenByTagName.size() > 1)
+            throw new ParserConfigurationException("There is more than one: " + name);
+
+        if (childrenByTagName.size() < 1)
+            return null;
+
+        return childrenByTagName.get(0);
     }
 
     public Configuration parse() throws Exception {
@@ -105,7 +126,8 @@ public class ConfigurationParser {
         ArrayList<TypeAlias> aliases = new ArrayList<>();
         Element typeAliasesElement = getChildByTagName(conf, "typeAliases");
         if (typeAliasesElement == null)
-            throw new ParserConfigurationException("The typeAliases element is missing from the configuration file");;
+            throw new ParserConfigurationException("The typeAliases element is missing from the configuration file");
+        ;
 
         List<Element> typeAliasElements = getChildrenByTagName(typeAliasesElement, "typeAlias");
         for (Element typeAliasElement : typeAliasElements) {
@@ -160,26 +182,5 @@ public class ConfigurationParser {
             dataSource.properties.setProperty(name, value);
         }
         return dataSource;
-    }
-
-    private static List<Element> getChildrenByTagName(Element parent, String name) {
-        List<Element> nodeList = new ArrayList<>();
-        for (Node child = parent.getFirstChild(); child != null; child = child.getNextSibling()) {
-            if (child.getNodeType() == Node.ELEMENT_NODE && name.equals(child.getNodeName()))
-                nodeList.add((Element) child);
-        }
-
-        return nodeList;
-    }
-
-    private static Element getChildByTagName(Element parent, String name) throws ParserConfigurationException {
-        List<Element> childrenByTagName = getChildrenByTagName(parent, name);
-        if (childrenByTagName.size() > 1)
-            throw new ParserConfigurationException("There is more than one: " + name);
-
-        if (childrenByTagName.size() < 1)
-            return null;
-
-        return childrenByTagName.get(0);
     }
 }

@@ -3,7 +3,6 @@ package StatementUtility;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +28,7 @@ public class StatementBuilder {
                 throw new IllegalArgumentException("Parameter " + paramNames.get(0) + " does not exist in the params object");
             field = paramsClass.getDeclaredField(paramName);
             field.setAccessible(true);
+
             Object value = field.get(params);
             Class<?> paramClass = value == null ? null : value.getClass();
             setToPreparedStatement(value, paramClass, i + 1, preparedStatement);
@@ -37,7 +37,7 @@ public class StatementBuilder {
     }
 
     private static Map<String, Field> getFields(Class<?> paramsClass) {
-        HashMap<String, Field> fieldNames= new HashMap<>();
+        HashMap<String, Field> fieldNames = new HashMap<>();
         for (Field declaredField : paramsClass.getDeclaredFields()) {
             String normalized = normalize(declaredField.getName());
             fieldNames.put(normalized, declaredField);

@@ -1,4 +1,4 @@
 package SqlMappingModels;
 
-public class SqlDelete extends SqlMapping{
+public class SqlDelete extends SqlMapping {
 }

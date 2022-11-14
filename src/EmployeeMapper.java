@@ -1,4 +1,7 @@
-import Anotations.*;
+import Anotations.Delete;
+import Anotations.Insert;
+import Anotations.Select;
+import Anotations.Update;
 
 import java.util.List;
 

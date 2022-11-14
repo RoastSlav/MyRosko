@@ -1,3 +1,3 @@
 package SqlMappingModels;
 
-public enum MappingTypeEnum { INSERT, UPDATE, SELECT, DELETE }
+public enum MappingTypeEnum {INSERT, UPDATE, SELECT, DELETE}

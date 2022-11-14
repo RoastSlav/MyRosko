@@ -4,9 +4,11 @@ import ClassMappers.ClassMapperFactory;
 import ConfigurationModels.Configuration;
 import ConfigurationModels.Mapper;
 import Exceptions.MyBatisException;
-import SqlMappingModels.*;
+import SqlMappingModels.SqlDelete;
+import SqlMappingModels.SqlInsert;
+import SqlMappingModels.SqlSelect;
+import SqlMappingModels.SqlUpdate;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -16,12 +18,13 @@ import java.util.List;
 
 import static StatementUtility.MapperUtility.getMapping;
 import static StatementUtility.ObjectBuilder.constructObject;
-import static StatementUtility.StatementBuilder.*;
+import static StatementUtility.StatementBuilder.prepareStatement;
 import static Utility.StringUtility.normalize;
 
 public class SqlSession implements AutoCloseable {
     private final Connection conn;
     private final Configuration config;
+
     protected SqlSession(Connection conn, Configuration config) {
         this.conn = conn;
         this.config = config;
@@ -117,7 +120,8 @@ public class SqlSession implements AutoCloseable {
             ResultSet resultSet = preparedStatement.executeQuery();
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             Class<?> returnTypeClass = Class.forName(returnType);
-            HashMap<String, Field> fieldNames= new HashMap<>();
+
+            HashMap<String, Field> fieldNames = new HashMap<>();
             for (Field declaredField : returnTypeClass.getDeclaredFields()) {
                 String normalized = normalize(declaredField.getName());
                 fieldNames.put(normalized, declaredField);
@@ -166,13 +170,14 @@ public class SqlSession implements AutoCloseable {
             ResultSet resultSet = preparedStatement.executeQuery();
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             Class<?> returnTypeClass = Class.forName(returnType);
-            HashMap<String, Field> fieldNames= new HashMap<>();
+
+            HashMap<String, Field> fieldNames = new HashMap<>();
             for (Field declaredField : returnTypeClass.getDeclaredFields()) {
                 String normalized = normalize(declaredField.getName());
                 fieldNames.put(normalized, declaredField);
             }
             ArrayList<T> objects = new ArrayList<>();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 T resultObj = (T) constructObject(resultSet, resultSetMetaData, fieldNames, returnTypeClass);
                 objects.add(resultObj);
             }

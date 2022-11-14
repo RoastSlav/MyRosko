@@ -12,7 +12,8 @@ public class ObjectBuilder {
     public static <T> T constructObject(ResultSet resultSet, ResultSetMetaData metaData, HashMap<String, Field> fieldNames, Class<T> c) throws Exception {
         Constructor<T> declaredConstructor = c.getDeclaredConstructor();
         declaredConstructor.setAccessible(true);
-        T obj =  declaredConstructor.newInstance();
+        T obj = declaredConstructor.newInstance();
+
         int columnCount = metaData.getColumnCount();
         for (int i = 1; i <= columnCount; i++) {
             String normalizedName = normalize(metaData.getColumnName(i));

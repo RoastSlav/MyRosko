@@ -32,7 +32,7 @@ class MapperParser {
             return null;
 
         Mapper mapper = new Mapper();
-        mapper.namespace =  doc.getDocumentElement().getAttribute("namespace");
+        mapper.namespace = doc.getDocumentElement().getAttribute("namespace");
         mapper.mappings = parseMappings(doc);
         mapper.resultMaps = parseResultMaps(doc);
 
@@ -73,7 +73,7 @@ class MapperParser {
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
         Document doc;
-        try(Reader reader = Resources.getResourceAsReader(resource)) {
+        try (Reader reader = Resources.getResourceAsReader(resource)) {
             doc = dBuilder.parse(new InputSource(reader));
         }
         doc.getDocumentElement().normalize();

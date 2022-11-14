@@ -1,4 +1,4 @@
 package SqlMappingModels;
 
-public class SqlUpdate extends SqlMapping{
+public class SqlUpdate extends SqlMapping {
 }

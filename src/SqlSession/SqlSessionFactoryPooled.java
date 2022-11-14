@@ -14,46 +14,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class SqlSessionFactoryPooled extends SqlSessionFactory {
-    static class ConnectionWrapper {
-        Connection connection;
-        boolean available;
-        long lastUsed;
-        long timeGiven;
-
-        ConnectionWrapper(String url, String username, String password) throws SQLException {
-            connection = DriverManager.getConnection(url, username, password);
-            lastUsed = System.currentTimeMillis();
-            timeGiven = -1;
-            available = true;
-        }
-    }
-
-    static class ConnectionHandler implements InvocationHandler {
-        private final Connection con;
-
-        public ConnectionHandler(Connection con) {
-            this.con = con;
-        }
-
-        public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
-            if (m.getName().equals("close")) {
-                releaseConnection((Connection) proxy);
-            }
-            return m.invoke(con, args);
-        }
-    }
-
     private static final int MAX_CONNECTIONS = 10;
     private static final int MIN_CONNECTIONS = 3;
     private static final int TEN_MINUTES_IN_MILLIS = 600000;
-    private final Configuration config;
     private static String URL;
     private static String USERNAME;
     private static String PASSWORD;
     private static Timer activityTimer;
     private static ConnectionWrapper[] connections;
     private static int connectionsCount;
-
+    private final Configuration config;
     protected SqlSessionFactoryPooled(Configuration configuration, Environment env) {
         config = configuration;
         String driver = env.dataSource.properties.getProperty("driver");
@@ -62,21 +32,6 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
         PASSWORD = env.dataSource.properties.getProperty("password");
         System.setProperty("jdbc.DRIVER", driver);
         intializePool();
-    }
-
-    private void intializePool() {
-        connections = new ConnectionWrapper[MAX_CONNECTIONS];
-        activityTimer = new Timer();
-        connectionsCount = 0;
-        setActivityTimer();
-        for (int i = 0; i < MIN_CONNECTIONS; i++) {
-            try {
-                connections[i] = new ConnectionWrapper(URL, USERNAME, PASSWORD);
-                connectionsCount++;
-            } catch (SQLException e) {
-                throw new MyBatisException(e);
-            }
-        }
     }
 
     private static void setActivityTimer() {
@@ -109,6 +64,33 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
         activityTimer.schedule(task, TEN_MINUTES_IN_MILLIS);
     }
 
+    private static void releaseConnection(Connection conn) {
+        for (ConnectionWrapper connection : connections) {
+            if (connection == null)
+                break;
+            if (connection.connection.equals(conn)) {
+                connection.available = true;
+                connection.lastUsed = System.currentTimeMillis();
+                break;
+            }
+        }
+    }
+
+    private void intializePool() {
+        connections = new ConnectionWrapper[MAX_CONNECTIONS];
+        activityTimer = new Timer();
+        connectionsCount = 0;
+        setActivityTimer();
+        for (int i = 0; i < MIN_CONNECTIONS; i++) {
+            try {
+                connections[i] = new ConnectionWrapper(URL, USERNAME, PASSWORD);
+                connectionsCount++;
+            } catch (SQLException e) {
+                throw new MyBatisException(e);
+            }
+        }
+    }
+
     private Connection getPooledConnection() throws SQLException {
         ConnectionWrapper result = connections[0];
 
@@ -134,24 +116,12 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
         var handler = new ConnectionHandler(result.connection);
         Object proxy = Proxy.newProxyInstance(
                 ClassLoader.getSystemClassLoader(),
-                new Class[] { Connection.class } , handler);
+                new Class[]{Connection.class}, handler);
         return (Connection) proxy;
     }
 
-    private static void releaseConnection(Connection conn) {
-        for (ConnectionWrapper connection : connections) {
-            if (connection == null)
-                break;
-            if (connection.connection.equals(conn)) {
-                connection.available = true;
-                connection.lastUsed = System.currentTimeMillis();
-                break;
-            }
-        }
-    }
-
     private SqlSession createSession() throws SQLException {
-       Connection conn = getPooledConnection();
+        Connection conn = getPooledConnection();
         return new SqlSession(conn, config);
     }
 
@@ -169,5 +139,34 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
 
     public Configuration getConfiguration() {
         return config;
+    }
+
+    static class ConnectionWrapper {
+        Connection connection;
+        boolean available;
+        long lastUsed;
+        long timeGiven;
+
+        ConnectionWrapper(String url, String username, String password) throws SQLException {
+            connection = DriverManager.getConnection(url, username, password);
+            lastUsed = System.currentTimeMillis();
+            timeGiven = -1;
+            available = true;
+        }
+    }
+
+    static class ConnectionHandler implements InvocationHandler {
+        private final Connection con;
+
+        public ConnectionHandler(Connection con) {
+            this.con = con;
+        }
+
+        public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
+            if (m.getName().equals("close")) {
+                releaseConnection((Connection) proxy);
+            }
+            return m.invoke(con, args);
+        }
     }
 }

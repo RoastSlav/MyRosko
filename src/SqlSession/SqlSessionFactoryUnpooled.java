@@ -9,10 +9,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class SqlSessionFactoryUnpooled extends SqlSessionFactory {
-    private final Configuration config;
     private static String URL;
     private static String USERNAME;
     private static String PASSWORD;
+    private final Configuration config;
 
     protected SqlSessionFactoryUnpooled(Configuration configuration, Environment env) {
         config = configuration;

@@ -12,9 +12,9 @@ public class SqlParser {
     public static void prepareSql(SqlMapping mapping) {
         Matcher matcher = valueNamesPattern.matcher(mapping.sql);
         mapping.sql = matcher.replaceAll((match) -> {
-           String paramName = match.group(1);
-           mapping.paramNames.add(paramName);
-           return "?";
+            String paramName = match.group(1);
+            mapping.paramNames.add(paramName);
+            return "?";
         });
     }
 
