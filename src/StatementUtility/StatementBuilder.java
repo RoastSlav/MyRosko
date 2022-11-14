@@ -12,6 +12,11 @@ import static Utility.StringUtility.normalize;
 
 public class StatementBuilder {
     public static PreparedStatement prepareStatement(String sql, Object params, List<String> paramNames, Connection conn) throws Exception {
+        Map<String, Object> fieldNames = getFields(params.getClass(), params);
+        return preparedStatement(sql, fieldNames, paramNames, conn);
+    }
+
+    public static PreparedStatement preparedStatement(String sql, Map<String, Object> params, List<String> paramNames, Connection conn) throws Exception {
         Class<?> paramsClass = params == null ? null : params.getClass();
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
         if (setToPreparedStatement(params, paramsClass, 1, preparedStatement)) {
@@ -20,27 +25,23 @@ public class StatementBuilder {
             return preparedStatement;
         }
 
-        Map<String, Field> fieldNames = getFields(paramsClass);
         for (int i = 0; i < paramNames.size(); i++) {
             String paramName = paramNames.get(i);
-            Field field = fieldNames.get(normalize(paramName));
-            if (field == null)
+            Object value = params.get(normalize(paramName));
+            if (value == null)
                 throw new IllegalArgumentException("Parameter " + paramNames.get(0) + " does not exist in the params object");
-            field = paramsClass.getDeclaredField(paramName);
-            field.setAccessible(true);
-
-            Object value = field.get(params);
             Class<?> paramClass = value == null ? null : value.getClass();
             setToPreparedStatement(value, paramClass, i + 1, preparedStatement);
         }
         return preparedStatement;
     }
 
-    private static Map<String, Field> getFields(Class<?> paramsClass) {
-        HashMap<String, Field> fieldNames = new HashMap<>();
+    private static Map<String, Object> getFields(Class<?> paramsClass, Object params) throws IllegalAccessException {
+        HashMap<String, Object> fieldNames = new HashMap<>();
         for (Field declaredField : paramsClass.getDeclaredFields()) {
             String normalized = normalize(declaredField.getName());
-            fieldNames.put(normalized, declaredField);
+            declaredField.setAccessible(true);
+            fieldNames.put(normalized, declaredField.get(params));
         }
         return fieldNames;
     }

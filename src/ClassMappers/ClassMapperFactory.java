@@ -7,10 +7,7 @@ import Anotations.Update;
 import SqlMappingModels.ClassMapperStatement;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +15,7 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static Parsers.SqlParser.prepareSql;
 import static StatementUtility.ObjectBuilder.constructObject;
@@ -40,7 +38,7 @@ public class ClassMapperFactory {
                     String sql = ((Select) annotations[0]).value();
 
                     ClassMapperStatement statement = getStatement(sql, method.getName(), c);
-                    return selectObject(statement.sql, statement.values, returnType, args[0]);
+                    return selectObject(statement.sql, statement.values, returnType, args, method);
                 } else if (annotations[0] instanceof Insert ||
                         annotations[0] instanceof Update ||
                         annotations[0] instanceof Delete) {
@@ -55,8 +53,16 @@ public class ClassMapperFactory {
         return (T) Proxy.newProxyInstance(c.getClassLoader(), new Class[]{c}, handler);
     }
 
-    private <T> T selectObject(String sql, List<String> values, Class<T> c, Object params) throws Exception {
-        PreparedStatement preparedStatement = prepareStatement(sql, params, values, conn);
+    private <T> T selectObject(String sql, List<String> values, Class<T> c, Object[] params, Method m) throws Exception {
+        Map<String, Object> objectValues = new HashMap<>();
+        Parameter[] parameters = m.getParameters();
+        for (int j = 0; j < parameters.length; j++) {
+            Parameter parameter = parameters[j];
+            String name = parameter.getName();
+            objectValues.put(name, params[j]);
+        }
+
+        PreparedStatement preparedStatement = prepareStatement(sql, objectValues, values, conn);
         ResultSet resultSet = preparedStatement.executeQuery();
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
 
