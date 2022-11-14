@@ -4,11 +4,9 @@ import ClassMappers.ClassMapperFactory;
 import ConfigurationModels.Configuration;
 import ConfigurationModels.Mapper;
 import Exceptions.MyBatisException;
-import SqlMappingModels.SqlDelete;
-import SqlMappingModels.SqlInsert;
-import SqlMappingModels.SqlSelect;
-import SqlMappingModels.SqlUpdate;
+import SqlMappingModels.*;
 
+import javax.xml.transform.Result;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -17,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static StatementUtility.MapperUtility.getMapping;
+import static StatementUtility.MapperUtility.getResultMap;
 import static StatementUtility.ObjectBuilder.constructObject;
 import static StatementUtility.StatementBuilder.prepareStatement;
 import static Utility.StringUtility.normalize;
@@ -109,8 +108,13 @@ public class SqlSession implements AutoCloseable {
 
     public <T> T selectOne(String statement, Object params) {
         SqlSelect select = (SqlSelect) getMapping(statement, config);
+        ResultMap resultMap = null;
         String parameterType = select.parameterType;
         String returnType = select.resultType;
+        String resultMapType = select.resultMapType;
+        if (!resultMapType.isEmpty()) {
+            resultMap = getResultMap(resultMapType, config);
+        }
 
         try {
             if (params != null && !params.getClass().getSimpleName().equals(convertClassName(parameterType)))
@@ -121,20 +125,26 @@ public class SqlSession implements AutoCloseable {
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             Class<?> returnTypeClass = Class.forName(returnType);
 
-            HashMap<String, Field> fieldNames = new HashMap<>();
-            for (Field declaredField : returnTypeClass.getDeclaredFields()) {
-                String normalized = normalize(declaredField.getName());
-                fieldNames.put(normalized, declaredField);
-            }
-
             if (!resultSet.next())
                 return null;
 
-            T object = (T) constructObject(resultSet, resultSetMetaData, fieldNames, returnTypeClass);
+            T resultObj = null;
+            if (resultMap != null) {
+                resultObj = (T) constructObject(resultSet, resultSetMetaData, resultMap, returnTypeClass);
+            } else {
+                HashMap<String, Field> fieldNames = new HashMap<>();
+                for (Field declaredField : returnTypeClass.getDeclaredFields()) {
+                    String normalized = normalize(declaredField.getName());
+                    fieldNames.put(normalized, declaredField);
+                }
+                resultObj = (T) constructObject(resultSet, resultSetMetaData, fieldNames, returnTypeClass);
+            }
+
+
             if (resultSet.next()) {
                 throw new IllegalStateException("Select query returned more than 1 entries! Use selectList");
             }
-            return object;
+            return resultObj;
         } catch (Exception e) {
             throw new MyBatisException(e);
         }
@@ -159,8 +169,13 @@ public class SqlSession implements AutoCloseable {
 
     public <T> List<T> selectList(String id, Object params) {
         SqlSelect select = (SqlSelect) getMapping(id, config);
+        ResultMap resultMap = null;
         String parameterType = select.parameterType;
         String returnType = select.resultType;
+        String resultMapType = select.resultMapType;
+        if (!resultMapType.isEmpty()) {
+            resultMap = getResultMap(resultMapType, config);
+        }
 
         if (params != null && !params.getClass().getSimpleName().equals(convertClassName(parameterType)))
             throw new MyBatisException("Params type is not matching the statement parameter type!");
@@ -170,13 +185,22 @@ public class SqlSession implements AutoCloseable {
             ResultSet resultSet = preparedStatement.executeQuery();
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             Class<?> returnTypeClass = Class.forName(returnType);
+            ArrayList<T> objects = new ArrayList<>();
+
+            if (resultMap != null) {
+                while (resultSet.next()) {
+                    T resultObj = (T) constructObject(resultSet, resultSetMetaData, resultMap, returnTypeClass);
+                    objects.add(resultObj);
+                }
+                return objects;
+            }
 
             HashMap<String, Field> fieldNames = new HashMap<>();
             for (Field declaredField : returnTypeClass.getDeclaredFields()) {
                 String normalized = normalize(declaredField.getName());
                 fieldNames.put(normalized, declaredField);
             }
-            ArrayList<T> objects = new ArrayList<>();
+
             while (resultSet.next()) {
                 T resultObj = (T) constructObject(resultSet, resultSetMetaData, fieldNames, returnTypeClass);
                 objects.add(resultObj);

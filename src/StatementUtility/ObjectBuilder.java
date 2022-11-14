@@ -1,5 +1,7 @@
 package StatementUtility;
 
+import SqlMappingModels.ResultMap;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
@@ -26,6 +28,21 @@ public class ObjectBuilder {
             if (value == null)
                 continue;
             field.set(obj, value);
+        }
+        return obj;
+    }
+
+    public static <T> T constructObject(ResultSet resultSet, ResultSetMetaData metaData, ResultMap map, Class<T> c) throws Exception{
+        Constructor<T> declaredConstructor = c.getDeclaredConstructor();
+        declaredConstructor.setAccessible(true);
+        T obj = declaredConstructor.newInstance();
+
+        int columnCount = metaData.getColumnCount();
+        for (int i = 0; i < columnCount; i++) {
+            String columnName = metaData.getColumnName(i);
+            String propertyName = map.mappings.get(columnName);
+            Object value = resultSet.getObject(columnName);
+            c.getDeclaredField(propertyName).set(obj, value);
         }
         return obj;
     }
