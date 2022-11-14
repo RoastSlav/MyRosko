@@ -4,31 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Made ISqlSessionFactory.java an abstract class">
-      <change afterPath="$PROJECT_DIR$/src/Anotations/Delete.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Anotations/Insert.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Anotations/Select.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Anotations/Update.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ClassMappers/ClassMapperFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/EmployeeMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Exceptions/MyBatisException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Parsers/SqlParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/SqlMappingModels/ClassMapperStatement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/StatementUtility/MapperUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/StatementUtility/ObjectBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/StatementUtility/StatementBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Utility/StringUtility.java" afterDir="false" />
+    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Hard day">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EmployeeMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/EmployeeMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ConfigurationModels/Mapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ConfigurationModels/Mapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Employee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parsers/ConfigurationParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parsers/ConfigurationParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parsers/MapperParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parsers/MapperParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlMappingModels/SqlMapping.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlMappingModels/SqlMapping.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactoryPooled.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactoryPooled.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactoryUnpooled.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactoryUnpooled.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,26 +36,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Programming Projects/Utility/MySQL JDBC connector/mysql-connector-j-8.0.31.jar&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/Programming Projects/Homework",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
-}</component>
+}]]></component>
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="config.properties.getProperty(&quot;db_driver&quot;)" />
@@ -105,7 +82,7 @@
       <workItem from="1668065511662" duration="7452000" />
       <workItem from="1668114640792" duration="12641000" />
       <workItem from="1668333778152" duration="9723000" />
-      <workItem from="1668344256551" duration="10750000" />
+      <workItem from="1668344256551" duration="11181000" />
     </task>
     <task id="LOCAL-00001" summary="Created models and parsers for the configuration file and mapper files.">
       <created>1667993790220</created>
@@ -170,7 +147,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668167561487</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Hard day">
+      <created>1668355901934</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1668355901934</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -198,7 +182,8 @@
     <MESSAGE value="Minor changes to the initialization of the POOLED SqlSessionFactory" />
     <MESSAGE value="Split the pooled and unpooled parts of SqlSessionFactory.java and made it an interface for the new classes to follow" />
     <MESSAGE value="Made ISqlSessionFactory.java an abstract class" />
-    <option name="LAST_COMMIT_MESSAGE" value="Made ISqlSessionFactory.java an abstract class" />
+    <MESSAGE value="Hard day" />
+    <option name="LAST_COMMIT_MESSAGE" value="Hard day" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

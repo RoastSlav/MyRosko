@@ -1,6 +1,7 @@
 package SqlSession;
 
 import ConfigurationModels.Configuration;
+import Exceptions.MyBatisException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -157,7 +158,7 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
         try {
             return createSession();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MyBatisException(e);
         }
     }
 

@@ -2,6 +2,7 @@ package SqlSession;
 
 import ConfigurationModels.Configuration;
 import ConfigurationModels.Environment;
+import Exceptions.MyBatisException;
 import Parsers.ConfigurationParser;
 
 import java.io.Reader;
@@ -27,7 +28,7 @@ public class SqlSessionFactoryBuilder {
             ConfigurationParser configurationParser = new ConfigurationParser(reader, props);
             configuration = configurationParser.parse();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MyBatisException(e);
         }
 
         Environment env = null;

@@ -1,6 +1,7 @@
 package SqlSession;
 
 import ConfigurationModels.Configuration;
+import Exceptions.MyBatisException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -34,7 +35,7 @@ public class SqlSessionFactoryUnpooled extends SqlSessionFactory {
         try {
             return createSession();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MyBatisException(e);
         }
     }
 
