@@ -1,6 +1,7 @@
 package SqlSession;
 
 import ConfigurationModels.Configuration;
+import ConfigurationModels.Environment;
 import Exceptions.MyBatisException;
 
 import java.sql.Connection;
@@ -13,12 +14,12 @@ public class SqlSessionFactoryUnpooled extends SqlSessionFactory {
     private static String USERNAME;
     private static String PASSWORD;
 
-    protected SqlSessionFactoryUnpooled(Configuration configuration) {
+    protected SqlSessionFactoryUnpooled(Configuration configuration, Environment env) {
         config = configuration;
-        String driver = config.environments.defaultEnv.dataSource.properties.getProperty("db_driver");
-        URL = config.environments.defaultEnv.dataSource.properties.getProperty("db_url");
-        USERNAME = config.environments.defaultEnv.dataSource.properties.getProperty("db_user");
-        PASSWORD = config.environments.defaultEnv.dataSource.properties.getProperty("db_password");
+        String driver = env.dataSource.properties.getProperty("db_driver");
+        URL = env.dataSource.properties.getProperty("db_url");
+        USERNAME = env.dataSource.properties.getProperty("db_user");
+        PASSWORD = env.dataSource.properties.getProperty("db_password");
         System.setProperty("jdbc.DRIVER", driver);
     }
 

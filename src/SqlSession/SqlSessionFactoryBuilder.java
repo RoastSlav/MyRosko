@@ -46,8 +46,8 @@ public class SqlSessionFactoryBuilder {
             throw new NoSuchElementException("There isn't an environment with this id: " + environment);
 
         if (env.dataSource.type.equals("POOLED"))
-            return new SqlSessionFactoryPooled(configuration);
+            return new SqlSessionFactoryPooled(configuration, env);
         else
-            return new SqlSessionFactoryUnpooled(configuration);
+            return new SqlSessionFactoryUnpooled(configuration, env);
     }
 }

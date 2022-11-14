@@ -1,6 +1,7 @@
 package SqlSession;
 
 import ConfigurationModels.Configuration;
+import ConfigurationModels.Environment;
 import Exceptions.MyBatisException;
 
 import java.lang.reflect.InvocationHandler;
@@ -53,12 +54,12 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
     private static ConnectionWrapper[] connections;
     private static int connectionsCount;
 
-    protected SqlSessionFactoryPooled(Configuration configuration) {
+    protected SqlSessionFactoryPooled(Configuration configuration, Environment env) {
         config = configuration;
-        String driver = config.environments.defaultEnv.dataSource.properties.getProperty("driver");
-        URL = config.environments.defaultEnv.dataSource.properties.getProperty("url");
-        USERNAME = config.environments.defaultEnv.dataSource.properties.getProperty("username");
-        PASSWORD = config.environments.defaultEnv.dataSource.properties.getProperty("password");
+        String driver = env.dataSource.properties.getProperty("driver");
+        URL = env.dataSource.properties.getProperty("url");
+        USERNAME = env.dataSource.properties.getProperty("username");
+        PASSWORD = env.dataSource.properties.getProperty("password");
         System.setProperty("jdbc.DRIVER", driver);
         intializePool();
     }
@@ -73,7 +74,7 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
                 connections[i] = new ConnectionWrapper(URL, USERNAME, PASSWORD);
                 connectionsCount++;
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new MyBatisException(e);
             }
         }
     }
@@ -94,7 +95,7 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
                             connections[i] = null;
                             connectionsCount--;
                         } catch (SQLException e) {
-                            System.out.println("Could not close connection");
+                            throw new MyBatisException("Could not close connection " + connections[i]);
                         }
                     }
 
@@ -127,7 +128,7 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
         }
 
         if (!result.available)
-            throw new RuntimeException("There are no available connections");
+            throw new MyBatisException("There are no available connections");
 
         result.available = false;
         var handler = new ConnectionHandler(result.connection);
