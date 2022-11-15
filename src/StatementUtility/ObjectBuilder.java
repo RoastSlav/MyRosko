@@ -32,7 +32,7 @@ public class ObjectBuilder {
         return obj;
     }
 
-    public static <T> T constructObject(ResultSet resultSet, ResultSetMetaData metaData, ResultMap map, Class<T> c) throws Exception{
+    public static <T> T constructObject(ResultSet resultSet, ResultSetMetaData metaData, ResultMap map, Class<T> c) throws Exception {
         Constructor<T> declaredConstructor = c.getDeclaredConstructor();
         declaredConstructor.setAccessible(true);
         T obj = declaredConstructor.newInstance();

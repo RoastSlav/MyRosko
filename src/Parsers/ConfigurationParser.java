@@ -103,6 +103,7 @@ public class ConfigurationParser {
 
     private Properties parseProperties(Element conf) throws IOException, ParserConfigurationException {
         Properties properties = new Properties();
+        addDefaults(properties);
         Element propertiesElement = getChildByTagName(conf, "properties");
         if (propertiesElement == null)
             throw new ParserConfigurationException("The properties element is missing from the configuration file");
@@ -120,6 +121,11 @@ public class ConfigurationParser {
         }
 
         return properties;
+    }
+
+    private void addDefaults(Properties properties) {
+        properties.put("cacheEnabled", true);
+        properties.put("localCacheScope", "SESSION");
     }
 
     private TypeAlias[] parseTypeAliases(Element conf) throws ParserConfigurationException {

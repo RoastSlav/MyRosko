@@ -8,5 +8,6 @@ public class SqlMapping {
     public MappingTypeEnum mappingType;
     public String parameterType;
     public String sql;
+    public boolean flushCache;
     public List<String> paramNames = new ArrayList<>();
 }

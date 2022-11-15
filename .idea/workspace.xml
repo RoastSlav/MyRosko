@@ -4,7 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="More exceptions and the session factories now use the right environment" />
+    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Now the mapper uses all the args instead of only the first one">
+      <change afterPath="$PROJECT_DIR$/src/Cache/Cache.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Cache/CacheFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Cache/CacheFactoryBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EmployeeMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/EmployeeMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mybatis-config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/mybatis-config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ClassMappers/ClassMapperFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClassMappers/ClassMapperFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ConfigurationModels/Mapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ConfigurationModels/Mapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parsers/ConfigurationParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parsers/ConfigurationParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parsers/MapperParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parsers/MapperParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SqlMappingModels/SqlMapping.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlMappingModels/SqlMapping.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SqlMappingModels/SqlSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlMappingModels/SqlSelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactoryPooled.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactoryPooled.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/StatementUtility/MapperUtility.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/StatementUtility/MapperUtility.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/StatementUtility/ObjectBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/StatementUtility/ObjectBuilder.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -81,7 +98,9 @@
       <workItem from="1668114640792" duration="12641000" />
       <workItem from="1668333778152" duration="9723000" />
       <workItem from="1668344256551" duration="11181000" />
-      <workItem from="1668409557719" duration="336000" />
+      <workItem from="1668409557719" duration="622000" />
+      <workItem from="1668421070396" duration="5000" />
+      <workItem from="1668428667324" duration="15175000" />
     </task>
     <task id="LOCAL-00001" summary="Created models and parsers for the configuration file and mapper files.">
       <created>1667993790220</created>
@@ -167,7 +186,28 @@
       <option name="project" value="LOCAL" />
       <updated>1668409886483</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Formatting and clean up">
+      <created>1668410120802</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1668410120802</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Added support for the resultMaps">
+      <created>1668431271760</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1668431271760</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Now the mapper uses all the args instead of only the first one">
+      <created>1668435847054</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1668435847054</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -198,14 +238,17 @@
     <MESSAGE value="Hard day" />
     <MESSAGE value="Fixed some exceptions" />
     <MESSAGE value="More exceptions and the session factories now use the right environment" />
-    <option name="LAST_COMMIT_MESSAGE" value="More exceptions and the session factories now use the right environment" />
+    <MESSAGE value="Formatting and clean up" />
+    <MESSAGE value="Added support for the resultMaps" />
+    <MESSAGE value="Now the mapper uses all the args instead of only the first one" />
+    <option name="LAST_COMMIT_MESSAGE" value="Now the mapper uses all the args instead of only the first one" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Main.java</url>
-          <line>12</line>
+          <line>13</line>
           <option name="timeStamp" value="24" />
         </line-breakpoint>
       </breakpoints>

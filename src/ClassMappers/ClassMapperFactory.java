@@ -4,6 +4,8 @@ import Anotations.Delete;
 import Anotations.Insert;
 import Anotations.Select;
 import Anotations.Update;
+import Cache.Cache;
+import ConfigurationModels.Configuration;
 import SqlMappingModels.ClassMapperStatement;
 
 import java.lang.annotation.Annotation;
@@ -24,9 +26,11 @@ import static Utility.StringUtility.normalize;
 
 public class ClassMapperFactory {
     Connection conn;
+    public Configuration config;
 
-    public ClassMapperFactory(Connection conn) {
+    public ClassMapperFactory(Connection conn, Configuration config) {
         this.conn = conn;
+        this.config = config;
     }
 
     public <T> T createMapper(Class<?> c) {

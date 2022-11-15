@@ -8,6 +8,8 @@
         <property name="db_user" value="root"></property>
         <property name="db_password" value="toor"></property>
         <property name="db_url" value="jdbc:mysql://127.0.0.1/test?"></property>
+        <property name="cacheEnabled" value="true"></property>
+        <property name="localCacheScope" value="SESSION"></property>
     </properties>
     <typeAliases>
         <typeAlias alias="Employee" type="Homework.MyRosko.Employee"/>

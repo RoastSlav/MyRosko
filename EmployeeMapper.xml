@@ -3,8 +3,12 @@
         'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 
 <mapper namespace='Homework.MyRosko.EmployeeMapper'>
-
-    <select id='getEmployeeById' parameterType='int' resultType='Employee'>
+    <cache
+            eviction="FIFO"
+            flushInterval="60000"
+            size="512"
+            readOnly="true"/>
+    <select id='getEmployeeById' parameterType='int' resultType='Employee' useCache="true">
         SELECT employee_id   as id,
                email,
                first_name    as firstName,
@@ -41,7 +45,7 @@
         VALUES (#{firstName}, #{lastName}, #{email}, #{salary}, #{hireDate}, #{jobId}, #{managerId}, #{departmentId})
     </insert>
 
-    <update id='updateEmployee' parameterType='Employee'>
+    <update id='updateEmployee' parameterType='Employee' flushCache="true">
         UPDATE employees
         SET first_name    = #{firstName},
             last_name     = #{lastName},

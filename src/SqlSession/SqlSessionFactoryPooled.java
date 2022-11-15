@@ -24,6 +24,7 @@ public class SqlSessionFactoryPooled extends SqlSessionFactory {
     private static ConnectionWrapper[] connections;
     private static int connectionsCount;
     private final Configuration config;
+
     protected SqlSessionFactoryPooled(Configuration configuration, Environment env) {
         config = configuration;
         String driver = env.dataSource.properties.getProperty("driver");

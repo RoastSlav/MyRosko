@@ -1,12 +1,12 @@
 package SqlSession;
 
+import Cache.*;
 import ClassMappers.ClassMapperFactory;
 import ConfigurationModels.Configuration;
 import ConfigurationModels.Mapper;
 import Exceptions.MyBatisException;
 import SqlMappingModels.*;
 
-import javax.xml.transform.Result;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -23,6 +23,7 @@ import static Utility.StringUtility.normalize;
 public class SqlSession implements AutoCloseable {
     private final Connection conn;
     private final Configuration config;
+    private final HashMap<String, Cache> caches = new HashMap<String, Cache>();
 
     protected SqlSession(Connection conn, Configuration config) {
         this.conn = conn;
@@ -41,7 +42,7 @@ public class SqlSession implements AutoCloseable {
         if (!registeredMapper)
             throw new MyBatisException("Could not create mapper for class " + type.getName());
 
-        ClassMapperFactory factory = new ClassMapperFactory(conn);
+        ClassMapperFactory factory = new ClassMapperFactory(conn, config);
         return factory.createMapper(type);
     }
 
@@ -50,7 +51,11 @@ public class SqlSession implements AutoCloseable {
     }
 
     public int delete(String statement, Object params) {
-        SqlDelete delete = (SqlDelete) getMapping(statement, config);
+        Mapper mapper = new Mapper();
+        SqlDelete delete = (SqlDelete) getMapping(statement, config, mapper);
+        Cache cache = getCache(mapper);
+        if (delete.flushCache)
+            cache.clearCache();
         String parameterType = delete.parameterType;
 
         if (params != null && !params.getClass().getSimpleName().equals(convertClassName(parameterType)))
@@ -69,7 +74,11 @@ public class SqlSession implements AutoCloseable {
     }
 
     public int insert(String statement, Object params) {
-        SqlInsert insert = (SqlInsert) getMapping(statement, config);
+        Mapper mapper = new Mapper();
+        SqlInsert insert = (SqlInsert) getMapping(statement, config, mapper);
+        Cache cache = getCache(mapper);
+        if (insert.flushCache)
+            cache.clearCache();
         String parameterType = insert.parameterType;
 
         if (params != null && !params.getClass().getSimpleName().equals(convertClassName(parameterType)))
@@ -88,7 +97,12 @@ public class SqlSession implements AutoCloseable {
     }
 
     public int update(String statement, Object params) {
-        SqlUpdate update = (SqlUpdate) getMapping(statement, config);
+        Mapper mapper = new Mapper();
+        SqlUpdate update = (SqlUpdate) getMapping(statement, config, mapper);
+        Cache cache = getCache(mapper);
+        if (update.flushCache)
+            cache.clearCache();
+
         String parameterType = update.parameterType;
 
         if (params != null && !params.getClass().getSimpleName().equals(convertClassName(parameterType)))
@@ -107,7 +121,9 @@ public class SqlSession implements AutoCloseable {
     }
 
     public <T> T selectOne(String statement, Object params) {
-        SqlSelect select = (SqlSelect) getMapping(statement, config);
+        Mapper mapper = new Mapper();
+        SqlSelect select = (SqlSelect) getMapping(statement, config, mapper);
+        Cache cache = getCache(mapper);
         ResultMap resultMap = null;
         String parameterType = select.parameterType;
         String returnType = select.resultType;
@@ -121,6 +137,11 @@ public class SqlSession implements AutoCloseable {
                 throw new MyBatisException("Params type is not matching the statement parameter type!");
 
             PreparedStatement preparedStatement = prepareStatement(select.sql, params, select.paramNames, conn);
+            if (select.useCache) {
+                T result = (T) cache.get(preparedStatement.toString());
+                if (result != null)
+                    return result;
+            }
             ResultSet resultSet = preparedStatement.executeQuery();
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             Class<?> returnTypeClass = Class.forName(returnType);
@@ -144,6 +165,8 @@ public class SqlSession implements AutoCloseable {
             if (resultSet.next()) {
                 throw new IllegalStateException("Select query returned more than 1 entries! Use selectList");
             }
+            if (select.useCache)
+                cache.set(preparedStatement.toString(), resultObj);
             return resultObj;
         } catch (Exception e) {
             throw new MyBatisException(e);
@@ -168,7 +191,10 @@ public class SqlSession implements AutoCloseable {
     }
 
     public <T> List<T> selectList(String id, Object params) {
-        SqlSelect select = (SqlSelect) getMapping(id, config);
+        Mapper mapper = new Mapper();
+        SqlSelect select = (SqlSelect) getMapping(id, config, mapper);
+        Cache cache = getCache(mapper);
+
         ResultMap resultMap = null;
         String parameterType = select.parameterType;
         String returnType = select.resultType;
@@ -182,6 +208,11 @@ public class SqlSession implements AutoCloseable {
 
         try {
             PreparedStatement preparedStatement = prepareStatement(select.sql, params, select.paramNames, conn);
+            if (select.useCache) {
+                List<T> result = (List<T>) cache.get(preparedStatement.toString());
+                if (result != null)
+                    return result;
+            }
             ResultSet resultSet = preparedStatement.executeQuery();
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             Class<?> returnTypeClass = Class.forName(returnType);
@@ -205,10 +236,21 @@ public class SqlSession implements AutoCloseable {
                 T resultObj = (T) constructObject(resultSet, resultSetMetaData, fieldNames, returnTypeClass);
                 objects.add(resultObj);
             }
+            if (select.useCache)
+                cache.set(preparedStatement.toString(), objects);
             return objects;
         } catch (Exception e) {
             throw new MyBatisException(e);
         }
+    }
+
+    private Cache getCache(Mapper mapper) {
+        Cache cache = caches.get(mapper.namespace);
+        if (cache == null && mapper.cacheFactory != null) {
+            cache = mapper.cacheFactory.getCache();
+            caches.put(mapper.namespace, cache);
+        }
+        return cache;
     }
 
     public Connection getConnection() {

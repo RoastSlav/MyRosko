@@ -4,7 +4,9 @@ import Anotations.Delete;
 import Anotations.Insert;
 import Anotations.Select;
 import Anotations.Update;
+import Cache.*;
 import ConfigurationModels.Mapper;
+import Exceptions.MyBatisException;
 import SqlMappingModels.*;
 import Utility.Resources;
 import org.w3c.dom.Document;
@@ -35,6 +37,7 @@ class MapperParser {
         mapper.namespace = doc.getDocumentElement().getAttribute("namespace");
         mapper.mappings = parseMappings(doc);
         mapper.resultMaps = parseResultMaps(doc);
+        mapper.cacheFactory = parseCache(doc);
 
         return mapper;
     }
@@ -89,6 +92,25 @@ class MapperParser {
         return mappings.toArray(SqlMapping[]::new);
     }
 
+    private CacheFactory parseCache(Document doc) {
+        NodeList cacheNodes = doc.getElementsByTagName("cache");
+        if (cacheNodes.getLength() < 1)
+            return null;
+
+        if (cacheNodes.getLength() > 1)
+            throw new MyBatisException("There is more than one cache element in mapper " + doc.getDocumentElement().getAttribute("namespace"));
+
+        Element cacheElement = (Element) cacheNodes.item(0);
+        String eviction = cacheElement.getAttribute("eviction");
+        int flushInterval = Integer.parseInt(cacheElement.getAttribute("flushInterval"));
+        int size = Integer.parseInt(cacheElement.getAttribute("size"));
+        boolean readOnly = Boolean.parseBoolean(cacheElement.getAttribute("readOnly"));
+
+        CacheFactoryBuilder builder = CacheFactoryBuilder.getBuilder();
+        builder.setEviction(eviction).setFlushInterval(flushInterval).setSize(size).setReadOnly(readOnly);
+        return builder.build();
+    }
+
     private void parseSelect(Document doc, ArrayList<SqlMapping> mappings) {
         NodeList selects = doc.getElementsByTagName("select");
         for (int i = 0; i < selects.getLength(); i++) {
@@ -98,6 +120,8 @@ class MapperParser {
             getBasicInfo(selectElement, sqlSelect);
             sqlSelect.resultType = selectElement.getAttribute("resultType");
             sqlSelect.resultMapType = selectElement.getAttribute("resultMap");
+            String useCache = selectElement.getAttribute("useCache");
+            sqlSelect.useCache = useCache.equals("true") || useCache.isEmpty();
             mappings.add(sqlSelect);
         }
     }
@@ -143,6 +167,7 @@ class MapperParser {
         mapping.id = e.getAttribute("id");
         mapping.parameterType = e.getAttribute("parameterType");
         mapping.sql = e.getTextContent();
+        mapping.flushCache = e.getAttribute("flushCache").equals("true");
         prepareSql(mapping);
     }
 
