@@ -56,7 +56,7 @@ public class SqlSession implements AutoCloseable {
         Mapper mapper = new Mapper();
         SqlDelete delete = (SqlDelete) getMapping(statement, config, mapper);
         Cache cache = getCache(mapper);
-        if (delete.flushCache)
+        if (delete.flushCache && cache != null)
             cache.clearCache();
         String parameterType = delete.parameterType;
 
@@ -79,7 +79,7 @@ public class SqlSession implements AutoCloseable {
         Mapper mapper = new Mapper();
         SqlInsert insert = (SqlInsert) getMapping(statement, config, mapper);
         Cache cache = getCache(mapper);
-        if (insert.flushCache)
+        if (insert.flushCache && cache != null)
             cache.clearCache();
         String parameterType = insert.parameterType;
 
@@ -102,7 +102,7 @@ public class SqlSession implements AutoCloseable {
         Mapper mapper = new Mapper();
         SqlUpdate update = (SqlUpdate) getMapping(statement, config, mapper);
         Cache cache = getCache(mapper);
-        if (update.flushCache)
+        if (update.flushCache && cache != null)
             cache.clearCache();
 
         String parameterType = update.parameterType;
@@ -140,6 +140,8 @@ public class SqlSession implements AutoCloseable {
 
             PreparedStatement preparedStatement = prepareStatement(select.sql, params, select.paramNames, conn);
             if (select.useCache) {
+                if (cache == null)
+                    throw new MyBatisException("Mapping is set to use a cache but there is no caching set for the mapper");
                 T result = (T) cache.get(preparedStatement.toString());
                 if (result != null)
                     return result;
@@ -211,6 +213,8 @@ public class SqlSession implements AutoCloseable {
         try {
             PreparedStatement preparedStatement = prepareStatement(select.sql, params, select.paramNames, conn);
             if (select.useCache) {
+                if (cache == null)
+                    throw new MyBatisException("Mapping is set to use a cache but there is no caching set for the mapper");
                 List<T> result = (List<T>) cache.get(preparedStatement.toString());
                 if (result != null)
                     return result;

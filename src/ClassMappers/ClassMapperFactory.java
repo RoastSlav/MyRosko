@@ -1,17 +1,10 @@
 package ClassMappers;
 
-import Anotations.Delete;
-import Anotations.Insert;
-import Anotations.Select;
-import Anotations.Update;
 import Cache.Cache;
 import ConfigurationModels.Configuration;
 import ConfigurationModels.Mapper;
-import SqlMappingModels.ClassMapperStatement;
-import SqlMappingModels.MappingTypeEnum;
 import SqlMappingModels.SqlMapping;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,35 +32,43 @@ public class ClassMapperFactory {
 
     public <T> T createMapper(Class<?> c, Mapper mapper) {
         var handler = new InvocationHandler() {
+            Cache cache = null;
             public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
+                if (cache == null && mapper.cacheFactory != null)
+                    cache = mapper.cacheFactory.getCache();
+
                 SqlMapping mapping = null;
                 for (SqlMapping m : mapper.mappings) {
                     if (m.id.equals(method.getName()))
                         mapping = m;
                 }
 
+                T result = (T) cache.get(mapping.sql + args.toString());
+                if (result != null) {
+                    return result;
+                }
+
+                ArrayList<String> values = new ArrayList<>();
+                String sql = prepareSql(mapping.sql, values);
+                Map<String, Object> objectValues = new HashMap<>();
+                Parameter[] parameters = method.getParameters();
+                for (int j = 0; j < parameters.length; j++) {
+                    Parameter parameter = parameters[j];
+                    String name = parameter.getName();
+                    objectValues.put(name, args[j]);
+                }
                 if (mapping.mappingType == SELECT) {
                     Class<?> returnType = method.getReturnType();
-                    ClassMapperStatement statement = getStatement(mapping.sql, method.getName());
-                    return selectObject(statement.sql, statement.values, returnType, args, method);
+                    return selectObject(sql, values, returnType, objectValues);
                 } else {
-                    ClassMapperStatement statement = getStatement(mapping.sql, method.getName());
-                    return executeUpdate(statement.sql, statement.values, args[0]);
+                    return executeUpdate(sql, values, objectValues);
                 }
             }
         };
         return (T) Proxy.newProxyInstance(c.getClassLoader(), new Class[]{c}, handler);
     }
 
-    private <T> T selectObject(String sql, List<String> values, Class<T> c, Object[] params, Method m) throws Exception {
-        Map<String, Object> objectValues = new HashMap<>();
-        Parameter[] parameters = m.getParameters();
-        for (int j = 0; j < parameters.length; j++) {
-            Parameter parameter = parameters[j];
-            String name = parameter.getName();
-            objectValues.put(name, params[j]);
-        }
-
+    private <T> T selectObject(String sql, List<String> values, Class<T> c, Map<String, Object> objectValues) throws Exception {
         PreparedStatement preparedStatement = prepareStatement(sql, objectValues, values, conn);
         ResultSet resultSet = preparedStatement.executeQuery();
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
@@ -86,15 +87,8 @@ public class ClassMapperFactory {
         return object;
     }
 
-    private int executeUpdate(String sql, List<String> values, Object params) throws Exception {
-        PreparedStatement preparedStatement = prepareStatement(sql, params, values, conn);
+    private int executeUpdate(String sql, List<String> values, Map<String, Object> objectValues) throws Exception {
+        PreparedStatement preparedStatement = prepareStatement(sql, objectValues, values, conn);
         return preparedStatement.executeUpdate();
-    }
-
-    private ClassMapperStatement getStatement(String sql, String methodName) {
-        ArrayList<String> values = new ArrayList<>();
-        sql = prepareSql(sql, values);
-        ClassMapperStatement statement = new ClassMapperStatement(sql, null, null, values);
-        return statement;
     }
 }

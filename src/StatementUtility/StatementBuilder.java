@@ -12,7 +12,7 @@ import static Utility.StringUtility.normalize;
 
 public class StatementBuilder {
     public static PreparedStatement prepareStatement(String sql, Object params, List<String> paramNames, Connection conn) throws Exception {
-        Map<String, Object> fieldNames = getFields(params.getClass(), params);
+        Map<String, Object> fieldNames = getFieldValues(params.getClass(), params);
         return preparedStatement(sql, fieldNames, paramNames, conn);
     }
 
@@ -36,7 +36,7 @@ public class StatementBuilder {
         return preparedStatement;
     }
 
-    private static Map<String, Object> getFields(Class<?> paramsClass, Object params) throws IllegalAccessException {
+    private static Map<String, Object> getFieldValues(Class<?> paramsClass, Object params) throws IllegalAccessException {
         HashMap<String, Object> fieldNames = new HashMap<>();
         for (Field declaredField : paramsClass.getDeclaredFields()) {
             String normalized = normalize(declaredField.getName());
