@@ -1,6 +1,6 @@
 package SqlSession;
 
-import Cache.*;
+import Cache.Cache;
 import ClassMappers.ClassMapperFactory;
 import ConfigurationModels.Configuration;
 import ConfigurationModels.Mapper;

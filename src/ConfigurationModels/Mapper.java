@@ -1,6 +1,6 @@
 package ConfigurationModels;
 
-import Cache.*;
+import Cache.CacheFactory;
 import SqlMappingModels.ResultMap;
 import SqlMappingModels.SqlMapping;
 

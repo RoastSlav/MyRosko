@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Added caching to the Class Mappers" />
+    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Added checks to try to save and get from the cache only when It's configured to do so" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -83,7 +83,7 @@
       <workItem from="1668344256551" duration="11181000" />
       <workItem from="1668409557719" duration="622000" />
       <workItem from="1668421070396" duration="5000" />
-      <workItem from="1668428667324" duration="20592000" />
+      <workItem from="1668428667324" duration="20912000" />
     </task>
     <task id="LOCAL-00001" summary="Created models and parsers for the configuration file and mapper files.">
       <created>1667993790220</created>
@@ -211,7 +211,21 @@
       <option name="project" value="LOCAL" />
       <updated>1668517098531</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Forgot to actually save the results in the cache">
+      <created>1668517253326</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1668517253326</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Added checks to try to save and get from the cache only when It's configured to do so">
+      <created>1668517389708</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1668517389708</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -248,7 +262,9 @@
     <MESSAGE value="Added caching to the requests" />
     <MESSAGE value="Use the ready data for the ClassMapperFactory instead of doing the parsing at runtime" />
     <MESSAGE value="Added caching to the Class Mappers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added caching to the Class Mappers" />
+    <MESSAGE value="Forgot to actually save the results in the cache" />
+    <MESSAGE value="Added checks to try to save and get from the cache only when It's configured to do so" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added checks to try to save and get from the cache only when It's configured to do so" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

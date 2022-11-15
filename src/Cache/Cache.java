@@ -3,12 +3,12 @@ package Cache;
 import java.util.*;
 
 public class Cache {
-    HashMap<String, ElementWrapper> cache;
-    Queue<ElementWrapper> removeQueue;
-    Timer clearTimer;
     private final int flushInterval;
     private final int size;
     private final boolean readOnly;
+    private final HashMap<String, ElementWrapper> cache;
+    private Queue<ElementWrapper> removeQueue;
+    private Timer clearTimer;
 
     protected Cache(String eviction, int flushInterval, int size, boolean readOnly) {
         if (eviction.equals("FIFO"))
@@ -72,8 +72,7 @@ public class Cache {
     }
 
 
-
-    static class ElementWrapper implements Cloneable{
+    static class ElementWrapper implements Cloneable {
         private final String key;
         private final Object value;
         private int readCount;

@@ -6,15 +6,14 @@ public class CacheFactoryBuilder {
     private static final int DEFAULT_SIZE = 1024;
     private static final boolean DEFAULT_READ_ONLY = false;
     private static final CacheFactoryBuilder builder = new CacheFactoryBuilder();
-
-    public static CacheFactoryBuilder getBuilder() {
-        return builder;
-    }
-
     private String eviction = DEFAULT_EVICTION;
     private int flushInterval = DEFAULT_FLUSH_INTERVAL;
     private int size = DEFAULT_SIZE;
     private boolean readOnly = DEFAULT_READ_ONLY;
+
+    public static CacheFactoryBuilder getBuilder() {
+        return builder;
+    }
 
     public CacheFactoryBuilder setEviction(String eviction) {
         if (eviction != null)

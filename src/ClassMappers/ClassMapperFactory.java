@@ -22,8 +22,8 @@ import static StatementUtility.StatementBuilder.prepareStatement;
 import static Utility.StringUtility.normalize;
 
 public class ClassMapperFactory {
-    Connection conn;
-    public Configuration config;
+    private final Configuration config;
+    private final Connection conn;
 
     public ClassMapperFactory(Connection conn, Configuration config) {
         this.conn = conn;
@@ -33,6 +33,7 @@ public class ClassMapperFactory {
     public <T> T createMapper(Class<?> c, Mapper mapper) {
         var handler = new InvocationHandler() {
             Cache cache = null;
+
             public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
                 if (cache == null && mapper.cacheFactory != null)
                     cache = mapper.cacheFactory.getCache();
