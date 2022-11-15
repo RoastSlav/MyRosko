@@ -32,18 +32,20 @@ public class SqlSession implements AutoCloseable {
 
     public <T> T getMapper(Class<T> type) {
         boolean registeredMapper = false;
-        for (Mapper mapper : config.mappers) {
-            if (mapper.namespace.equals(type.getName())) {
+        Mapper mapper = null;
+        for (Mapper m : config.mappers) {
+            if (m.namespace.equals(type.getName())) {
                 registeredMapper = true;
+                mapper = m;
                 break;
             }
         }
 
         if (!registeredMapper)
-            throw new MyBatisException("Could not create mapper for class " + type.getName());
+            throw new MyBatisException(type.getName() + " is not a registered mapper");
 
         ClassMapperFactory factory = new ClassMapperFactory(conn, config);
-        return factory.createMapper(type);
+        return factory.createMapper(type, mapper);
     }
 
     public int delete(String statement) {

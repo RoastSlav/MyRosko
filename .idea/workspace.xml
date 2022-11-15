@@ -4,23 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Now the mapper uses all the args instead of only the first one">
-      <change afterPath="$PROJECT_DIR$/src/Cache/Cache.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Cache/CacheFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Cache/CacheFactoryBuilder.java" afterDir="false" />
+    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Added caching to the requests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EmployeeMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/EmployeeMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mybatis-config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/mybatis-config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ClassMappers/ClassMapperFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClassMappers/ClassMapperFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ConfigurationModels/Mapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ConfigurationModels/Mapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parsers/ConfigurationParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parsers/ConfigurationParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parsers/MapperParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parsers/MapperParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlMappingModels/SqlMapping.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlMappingModels/SqlMapping.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlMappingModels/SqlSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlMappingModels/SqlSelect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactoryPooled.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSessionFactoryPooled.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/StatementUtility/MapperUtility.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/StatementUtility/MapperUtility.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/StatementUtility/ObjectBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/StatementUtility/ObjectBuilder.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,7 +85,7 @@
       <workItem from="1668344256551" duration="11181000" />
       <workItem from="1668409557719" duration="622000" />
       <workItem from="1668421070396" duration="5000" />
-      <workItem from="1668428667324" duration="15175000" />
+      <workItem from="1668428667324" duration="17213000" />
     </task>
     <task id="LOCAL-00001" summary="Created models and parsers for the configuration file and mapper files.">
       <created>1667993790220</created>
@@ -207,7 +192,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668435847054</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Added caching to the requests">
+      <created>1668497294635</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1668497294635</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -241,7 +233,8 @@
     <MESSAGE value="Formatting and clean up" />
     <MESSAGE value="Added support for the resultMaps" />
     <MESSAGE value="Now the mapper uses all the args instead of only the first one" />
-    <option name="LAST_COMMIT_MESSAGE" value="Now the mapper uses all the args instead of only the first one" />
+    <MESSAGE value="Added caching to the requests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added caching to the requests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

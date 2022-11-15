@@ -6,7 +6,10 @@ import Anotations.Select;
 import Anotations.Update;
 import Cache.Cache;
 import ConfigurationModels.Configuration;
+import ConfigurationModels.Mapper;
 import SqlMappingModels.ClassMapperStatement;
+import SqlMappingModels.MappingTypeEnum;
+import SqlMappingModels.SqlMapping;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static Parsers.SqlParser.prepareSql;
+import static SqlMappingModels.MappingTypeEnum.SELECT;
 import static StatementUtility.ObjectBuilder.constructObject;
 import static StatementUtility.StatementBuilder.prepareStatement;
 import static Utility.StringUtility.normalize;
@@ -33,25 +37,23 @@ public class ClassMapperFactory {
         this.config = config;
     }
 
-    public <T> T createMapper(Class<?> c) {
+    public <T> T createMapper(Class<?> c, Mapper mapper) {
         var handler = new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
-                Annotation[] annotations = method.getDeclaredAnnotations();
-                if (annotations[0] instanceof Select) {
+                SqlMapping mapping = null;
+                for (SqlMapping m : mapper.mappings) {
+                    if (m.id.equals(method.getName()))
+                        mapping = m;
+                }
+
+                if (mapping.mappingType == SELECT) {
                     Class<?> returnType = method.getReturnType();
-                    String sql = ((Select) annotations[0]).value();
-
-                    ClassMapperStatement statement = getStatement(sql, method.getName(), c);
+                    ClassMapperStatement statement = getStatement(mapping.sql, method.getName());
                     return selectObject(statement.sql, statement.values, returnType, args, method);
-                } else if (annotations[0] instanceof Insert ||
-                        annotations[0] instanceof Update ||
-                        annotations[0] instanceof Delete) {
-                    String sql = ((Insert) annotations[0]).value();
-
-                    ClassMapperStatement statement = getStatement(sql, method.getName(), c);
+                } else {
+                    ClassMapperStatement statement = getStatement(mapping.sql, method.getName());
                     return executeUpdate(statement.sql, statement.values, args[0]);
                 }
-                return null;
             }
         };
         return (T) Proxy.newProxyInstance(c.getClassLoader(), new Class[]{c}, handler);
@@ -89,7 +91,7 @@ public class ClassMapperFactory {
         return preparedStatement.executeUpdate();
     }
 
-    private ClassMapperStatement getStatement(String sql, String methodName, Class<?> c) {
+    private ClassMapperStatement getStatement(String sql, String methodName) {
         ArrayList<String> values = new ArrayList<>();
         sql = prepareSql(sql, values);
         ClassMapperStatement statement = new ClassMapperStatement(sql, null, null, values);
