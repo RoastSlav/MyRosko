@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Use the ready data for the ClassMapperFactory instead of doing the parsing at runtime">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ClassMappers/ClassMapperFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClassMappers/ClassMapperFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SqlSession/SqlSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SqlSession/SqlSession.java" afterDir="false" />
-    </list>
+    <list default="true" id="8450788a-1414-4816-a276-7b12967a881e" name="Changes" comment="Added caching to the Class Mappers" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -87,7 +83,7 @@
       <workItem from="1668344256551" duration="11181000" />
       <workItem from="1668409557719" duration="622000" />
       <workItem from="1668421070396" duration="5000" />
-      <workItem from="1668428667324" duration="19662000" />
+      <workItem from="1668428667324" duration="20592000" />
     </task>
     <task id="LOCAL-00001" summary="Created models and parsers for the configuration file and mapper files.">
       <created>1667993790220</created>
@@ -208,7 +204,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668515379474</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Added caching to the Class Mappers">
+      <created>1668517098531</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1668517098531</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -244,7 +247,8 @@
     <MESSAGE value="Now the mapper uses all the args instead of only the first one" />
     <MESSAGE value="Added caching to the requests" />
     <MESSAGE value="Use the ready data for the ClassMapperFactory instead of doing the parsing at runtime" />
-    <option name="LAST_COMMIT_MESSAGE" value="Use the ready data for the ClassMapperFactory instead of doing the parsing at runtime" />
+    <MESSAGE value="Added caching to the Class Mappers" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added caching to the Class Mappers" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

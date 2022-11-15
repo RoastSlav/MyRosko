@@ -43,11 +43,6 @@ public class ClassMapperFactory {
                         mapping = m;
                 }
 
-                T result = (T) cache.get(mapping.sql + args.toString());
-                if (result != null) {
-                    return result;
-                }
-
                 ArrayList<String> values = new ArrayList<>();
                 String sql = prepareSql(mapping.sql, values);
                 Map<String, Object> objectValues = new HashMap<>();
@@ -58,9 +53,17 @@ public class ClassMapperFactory {
                     objectValues.put(name, args[j]);
                 }
                 if (mapping.mappingType == SELECT) {
+                    T result = (T) cache.get(mapping.sql + args.toString());
+                    if (result != null) {
+                        return result;
+                    }
+
                     Class<?> returnType = method.getReturnType();
-                    return selectObject(sql, values, returnType, objectValues);
+                    Object o = selectObject(sql, values, returnType, objectValues);
+                    cache.set(mapping.sql + args.toString(), o);
+                    return o;
                 } else {
+                    cache.clearCache();
                     return executeUpdate(sql, values, objectValues);
                 }
             }
